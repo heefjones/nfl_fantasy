@@ -25,7 +25,7 @@ random_state = 9
 
 
 
-def create_features(df):
+def create_features(df, target_col):
     '''
 
     Create features for the model. This includes cumulative stats, rolling stats, and year-over-year stats.
@@ -39,38 +39,51 @@ def create_features(df):
 
     '''
 
+    # ensure we are sorted properly
+    df = df.sort_values(['Key', 'Year'], ascending=True)
+
     # group by player
     player_group = df.groupby('Key')
 
-    # define aggregated cols
-    non_agg_cols = ['Key', 'Age', 'Exp', 'Will_be_on_New_Team', 'ProBowl', 'AllPro', 'PPGTarget_ppr']
-    agg_cols = [col for col in df.columns if col not in non_agg_cols]
+    # metadata cols
+    bool_cols = df.select_dtypes(include=['bool']).columns
+    meta_cols = ['Key', 'Year', 'Age', 'Exp']
+
+    # team_cols are the cols that start with 'Team_'
+    team_cols = [col for col in df.columns if col.startswith('Team_')]
+
+    # agg_cols are all columns that are not boolean, metadata, or target
+    agg_cols = [col for col in df.columns if col not in bool_cols and col not in meta_cols and col not in team_cols and col != target_col]
 
     # function to calculate aggregate stats
     def calculate_group_stats(group):
+        new_cols = {}
+        
         for col in agg_cols:
-            # career mean and std
-            group[f'career_mean_{col}'] = group[col].expanding().mean().shift().fillna(group[col].mean())
-            group[f'career_std_{col}'] = group[col].expanding().std().shift().fillna(group[col].std())
+            # Career mean and standard deviation including current and prior rows
+            new_cols[f'{col}_career_mean'] = group[col].expanding().mean()
+            new_cols[f'{col}_career_std'] = group[col].expanding().std()
 
-            # rolling mean and std over last 2 seasons, forward-filled if null
-            group[f'rolling_mean_2_{col}'] = group[col].rolling(2, min_periods=1).mean().shift().fillna(method='ffill')
-            group[f'rolling_std_2_{col}'] = group[col].rolling(2, min_periods=1).std().shift().fillna(method='ffill')
+            # Rolling mean and std over the last 3 seasons including current row
+            new_cols[f'{col}_rolling_mean_2'] = group[col].rolling(window=2, min_periods=1).mean()
+            new_cols[f'{col}_rolling_std_2'] = group[col].rolling(window=2, min_periods=1).std()
 
-            # rolling mean and std over last 4 seasons, forward-filled if null
-            # group[f'rolling_mean_4_{col}'] = group[col].rolling(4, min_periods=1).mean().shift().fillna(method='ffill')
-            # group[f'rolling_std_4_{col}'] = group[col].rolling(4, min_periods=1).std().shift().fillna(method='ffill')
-
-            # year-over-year stats are filled with 0 if null
-            # group[f'year_over_year_{col}'] = group[col].diff().shift().fillna(0)
-
-        return group
+            # Difference from the previous season
+            new_cols[f'{col}_diff'] = group[col].diff()
+        
+        # Convert the dictionary to a DataFrame and concatenate it with the original group
+        new_df = pd.concat([group, pd.DataFrame(new_cols, index=group.index)], axis=1)
+        
+        return new_df
 
     # Apply the function to each group
     features = player_group.apply(calculate_group_stats)
 
     # fill nulls
     features = features.fillna(0)
+
+    # fill infinities
+    features = features.replace([np.inf, -np.inf], 0)
 
     return features
 
