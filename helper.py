@@ -44,6 +44,28 @@ np.random.seed(SEED)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def show_shape_and_nulls(df):
+    """
+    Display the shape of a DataFrame and the number of null values in each column.
+
+    Args:
+    - df (pd.DataFrame): The DataFrame to analyze.
+
+    Returns:
+    - None
+    """
+
+    # print shape
+    print(f'Shape: {df.shape}')
+
+    # check for missing values
+    print('Null values:')
+
+    # display null values
+    display(df.isnull().sum().to_frame().T)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 def load_data(file_paths, multi_header=False, pff=False):
     # list to hold dfs
     dfs = []
