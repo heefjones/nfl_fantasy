@@ -118,117 +118,153 @@ def fill_experience(group):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def add_point_cols(df):
-    # calculate standard points
-    df['Points_standard'] = (df['Pass_Yds'] * 0.04) + (df['Pass_TD'] * 4) + (df['Pass_Int'] * -1) + \
-        (df['Rush_Yds'] * 0.1) + (df['Rush_TD'] * 6) + \
-        (df['Rec_Yds'] * 0.1) + (df['Rec_TD'] * 6) + \
-        (df['FmbLost'] * -2)
+def add_point_cols(df, points):
+    """
+    Add point columns to the dataframe.
 
-    # calculate half-ppr points
-    df['Points_half-ppr'] = df['Points_standard'] + (df['Rec_Rec'] * 0.5)
+    Args:
+    - df (pd.DataFrame): The dataframe to add point columns to.
+    - points (dict): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
 
-    # calculate ppr points
-    df['Points_ppr'] = df['Points_standard'] + (df['Rec_Rec'] * 1)
+    Returns:
+    - df (pd.DataFrame): The dataframe with point column added.
+    """
+
+    # calculate standard points without passing TDs
+    standard_points = (df['Pass_Yds'] * 0.04) + (df['Pass_Int'] * -1) + (df['Rush_Yds'] * 0.1) + \
+        (df['Rush_TD'] * 6) + (df['Rec_Yds'] * 0.1) + (df['Rec_TD'] * 6) + (df['FmbLost'] * -2)
+
+    # standard points
+    if points == 'standard':
+        df['Points_standard'] = standard_points + (df['Pass_TD'] * 4)
+        
+    # half-ppr    
+    elif points == 'half-ppr':
+        df['Points_half-ppr'] = standard_points + (df['Pass_TD'] * 4) + (df['Rec_Rec'] * 0.5)
+
+    # ppr    
+    elif points == 'ppr':
+        df['Points_ppr'] = standard_points + (df['Pass_TD'] * 4) + (df['Rec_Rec'] * 1)
 
     # PPR scoring with 6pt passing TDs
-    df['Points_6'] = (df['Pass_Yds'] * 0.04) + (df['Pass_TD'] * 6) + (df['Pass_Int'] * -1) + \
-        (df['Rush_Yds'] * 0.1) + (df['Rush_TD'] * 6) + \
-        (df['Rec_Rec'] * 1) + (df['Rec_Yds'] * 0.1) + (df['Rec_TD'] * 6) + \
-        (df['FmbLost'] * -2)
+    elif points == '6':
+        df['Points_6'] = standard_points + (df['Pass_TD'] * 6) + (df['Rec_Rec'] * 1)
 
-    # list for scoring
-    scoring = ['standard', 'half-ppr', 'ppr', '6']
+    # point-per-game column
+    df['PPG_' + points] = (df['Points_' + points] / df['G']).fillna(0)
 
-    # add point-per-game columns
-    for scoring_type in scoring:
-        df['PPG_' + scoring_type] = (df['Points_' + scoring_type] / df['G']).fillna(0)
-
-    # add point-per-touch columns
-    for scoring_type in scoring:
-        df['PPT_' + scoring_type] = (df['Points_' + scoring_type] / df['Touches']).fillna(0)
+    # point-per-touch column
+    df['PPT_' + points] = (df['Points_' + points] / df['Touches']).fillna(0)
 
     return df
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def add_rank_cols(df):
+    """
+    Extract the points column from df and add total Points, PPG, and PPT rank columns to df.
+
+    Args:
+    - df (pd.DataFrame): DataFrame containing player data.
+
+    Returns:
+    - pd.DataFrame: DataFrame with added rank columns.
+    """
+
     # some groups we will be using
     year_groups = df.groupby('Year')
     pos_groups = df.groupby(['Year', 'Pos'])
 
-    # define metric types and corresponding groups
-    metric_to_group = {'SeasonOvrRank': (year_groups, 'Points_{}'), 'SeasonPosRank': (pos_groups, 'Points_{}'), 
-                    'PPGOvrRank':    (year_groups, 'PPG_{}'), 'PPGPosRank':    (pos_groups, 'PPG_{}'), 
-                    'PPTOvrRank':    (year_groups, 'PPT_{}'), 'PPTPosRank':    (pos_groups, 'PPT_{}')}
+    # extract the suffix from the points column (e.g., "_half-ppr")
+    points_col = next(col for col in df.columns if col.startswith('Points_'))
+    points_type = points_col.replace('Points', '')
     
-    # list for scoring
-    scoring = ['standard', 'half-ppr', 'ppr', '6']
+    # create mapping for each metric and corresponding grouping
+    metrics = ['Points', 'PPG', 'PPT']
+    metric_to_group = {}
+    for metric in metrics:
+        metric_to_group[f'{metric}OvrRank{points_type}'] = year_groups
+        metric_to_group[f'{metric}PosRank{points_type}'] = pos_groups
+    
+    # iterate over each rank column, compute the ranking, and assign to df
+    for rank_col, group in metric_to_group.items():
+        # determine the base metric by removing the rank part from the rank column name
+        if 'OvrRank' in rank_col:
+            base_metric = rank_col.replace(f'OvrRank{points_type}', '')
+        elif 'PosRank' in rank_col:
+            base_metric = rank_col.replace(f'PosRank{points_type}', '')
+        
+        # construct the source column name
+        source_col = f"{base_metric}{points_type}"
 
-    # calculate all ranks
-    for metric, (group, col_template) in metric_to_group.items():
-        for k in scoring:
-            col_name = col_template.format(k)
-            rank_col = f'{metric}_{k}'
-            df[rank_col] = group[col_name].transform(lambda x: x.rank(ascending=False, method='min')).astype(int)
-
+        # compute rank
+        df[rank_col] = group[source_col].transform(lambda x: x.rank(ascending=False, method='min')).astype(int)
+    
     return df
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def add_vorp_cols(df):
-    # define the replacement rank based on league
-    replacement_ranks_10 = {'QB': 10, 'RB': 25, 'WR': 25, 'TE': 10}
-    replacement_ranks_12 = {'QB': 12, 'RB': 30, 'WR': 30, 'TE': 12}
-    replacement_ranks_10_3WR = {'QB': 10, 'RB': 25, 'WR': 35, 'TE': 10}
-    replacement_ranks_12_3WR = {'QB': 12, 'RB': 30, 'WR': 42,'TE': 12}
+def add_vorp_cols(df, num_teams=12, wr3=True):
+    """
+    Add VORP columns to the dataframe using the default Underdog fantasy lineup (12 teams, 3 WRs).
 
-    # list for scoring
-    scoring = ['standard', 'half-ppr', 'ppr', '6']
+    Args:
+    - df (pd.DataFrame): The dataframe containing player data.
+    - num_teams (int): The number of teams in the league.
+    - wr3 (bool): Whether to include a 3rd WR in the lineup.
+
+    Returns:
+    - df (pd.DataFrame): The dataframe with VORP columns added.
+    """
+
+    # define the replacement rank based on num teams and 3WR format
+    replacement_ranks = {'QB': num_teams, 'RB': int(num_teams * 2.5), 'WR': int(num_teams * 2.5 + True), 'TE': num_teams}
+
+    # extract the suffix from the points column (e.g., "_half-ppr")
+    points_col = next(col for col in df.columns if col.startswith('Points_'))
+    points_type = points_col.replace('Points', '')
 
     # iterate through the position groups
     for (year, pos), group in df.groupby(['Year', 'Pos']):
 
-        # iterate through the replacement ranks
-        for replacement_ranks, col_name in [(replacement_ranks_10, '10tm'), (replacement_ranks_12, '12tm'), (replacement_ranks_10_3WR, '10tm_3WR'), (replacement_ranks_12_3WR, '12tm_3WR')]:
+        # iterate for both season total and PPG VORP
+        for rank_type in ['Points', 'PPG']:
 
-            # iterate for both seasonal and PPG VORP
-            for rank_type in ['Points', 'PPG']:
+            # get the replacement rank for the current position, subtract 1 to get the index
+            rank = int(replacement_ranks[pos] - 1)
 
-                # get the replacement rank for the current position, subtract 1 to get the index
-                rank = int(replacement_ranks[pos] - 1)
+            # sort group
+            group = group.sort_values(rank_type + points_type, ascending=False)
 
-                # iterate through the scoring types
-                for scoring_type in scoring:
+            # get replacement player points for the current position and scoring type
+            replacement = group.iloc[rank][rank_type + points_type]
 
-                    # sort group
-                    group = group.sort_values(rank_type + '_' + scoring_type, ascending=False)
-
-                    # get replacement player points for the current position and scoring type
-                    replacement = group.iloc[rank][rank_type + '_' + scoring_type]
-
-                    # add VORP column
-                    df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + '_' + 'VORP_' + scoring_type + '_' + col_name] = \
-                    df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + '_' + scoring_type] - replacement
+            # add VORP column
+            df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + '_' + 'VORP' + points_type] = \
+            df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + points_type] - replacement
 
     return df
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def add_target_cols(df):
+    """
+    Add Total and PPG target columns to the dataframe.
 
-    # list for scoring
-    scoring = ['standard', 'half-ppr', 'ppr', '6']
-    
-    # add seasonal target cols
-    for scoring_type in scoring:
-        # group by each player and shift the points column by 1
-        df['SeasonTarget_' + scoring_type] = df.groupby('Key')['Points_' + scoring_type].shift(-1)
+    Args:
+    - df (pd.DataFrame): The dataframe containing player data.
 
-    # add ppg target cols
-    for scoring_type in scoring:
-        # group by each player and shift the points column by 1
-        df['PPGTarget_' + scoring_type] = df.groupby('Key')['PPG_' + scoring_type].shift(-1)
+    Returns:
+    - df (pd.DataFrame): The dataframe with target columns added.
+    """
+
+    # extract the suffix from the points column (e.g., "_half-ppr")
+    points_col = next(col for col in df.columns if col.startswith('Points_'))
+    points_type = points_col.replace('Points', '')
+
+    # group by each player and shift the points column by 1
+    df['PointsTarget' + points_type] = df.groupby('Key')['Points' + points_type].shift(-1)
+    df['PPGTarget' + points_type] = df.groupby('Key')['PPG' + points_type].shift(-1)
 
     return df
 
