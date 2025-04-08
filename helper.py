@@ -8,16 +8,17 @@ import seaborn as sns
 # system
 import os
 import gc
+from tqdm import tqdm
 
 # machine learning
 from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.ensemble import RandomForestRegressor, StackingRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import RobustScaler
-from sklearn.model_selection import train_test_split, cross_validate, cross_val_predict
-from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+from sklearn.model_selection import train_test_split, cross_validate, cross_val_predict, KFold
+from sklearn.metrics import r2_score, root_mean_squared_error
 from xgboost import XGBRegressor
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -38,7 +39,7 @@ receiving_data = './data/pff/receiving_data'
 blocking_data = './data/pff/blocking_data'
 team_data = './data/pff/team_data'
 
-# set numpy seed
+# numpy seed
 SEED = 9
 np.random.seed(SEED)
 
@@ -344,55 +345,7 @@ def clean_pff_data(pff_data, prefix):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def create_features(df):
-    """
-    Create features for each player.
 
-    Args:
-    - df (pd.dataframe): Contains the 
-
-    Returns:
-    - (pl.dataframe): Dataframe with new features added.
-    """
-
-    # convert to polars dataframe
-    df = pl.from_pandas(df)
-
-    # sort by player key and year
-    df = df.sort(["Key", "Year"])
-
-    # convert to lazy frame for better performance
-    lazy_df = df.lazy()
-
-    # define the rolling aggregation functions
-    agg_funcs = {"mean": lambda col, w: pl.col(col).rolling_mean(w, min_samples=1, center=True), 
-                 "std":  lambda col, w: pl.col(col).rolling_std(w, min_samples=1, center=True).fill_nan(0)}
-
-    # list of windows
-    windows = []
-
-    # loop over each window duration, creating rolling features
-    for m in windows:
-        # create a list to hold the expressions for this window size
-        exprs = []
-
-        # create rolling features for 
-        for col in ['anglez', 'enmo']:
-            for stat, func in agg_funcs.items():
-                alias_name = f'{col}_{m}m_{stat}'
-                exprs.append(func(col, m).alias(alias_name).cast(pl.Int16))
-            
-            # difference features
-            diff_col = f'{col}_diff'
-            for stat, func in agg_funcs.items():
-                alias_name = f'{diff_col}_{m}m_{stat}'
-                exprs.append(func(diff_col, m).alias(alias_name).cast(pl.UInt16))
-        
-        # add the rolling features
-        lazy_df = lazy_df.with_columns(exprs)
-
-    # collect the results back into a standard df
-    return lazy_df.collect()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
