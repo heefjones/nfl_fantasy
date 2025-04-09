@@ -119,58 +119,59 @@ def fill_experience(group):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def add_point_cols(df, points):
+def add_point_cols(df, points_type):
     """
     Add point columns to the dataframe.
 
     Args:
     - df (pd.DataFrame): The dataframe to add point columns to.
-    - points (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
 
     Returns:
     - df (pd.DataFrame): The dataframe with point column added.
     """
 
     # error handling
-    if points not in ['standard', 'half-ppr', 'ppr', '6']:
-        raise ValueError("Invalid points type. Choose from 'standard', 'half-ppr', 'ppr', or '6'.")
+    if points_type not in ['standard', 'half-ppr', 'ppr', '6']:
+        raise ValueError("Invalid points_type type. Choose from 'standard', 'half-ppr', 'ppr', or '6'.")
 
-    # calculate standard points without passing TDs
+    # calculate standard points_type (excluding passing TDs)
     standard_points = (df['Pass_Yds'] * 0.04) + (df['Pass_Int'] * -1) + (df['Rush_Yds'] * 0.1) + \
         (df['Rush_TD'] * 6) + (df['Rec_Yds'] * 0.1) + (df['Rec_TD'] * 6) + (df['FmbLost'] * -2)
 
     # standard points
-    if points == 'standard':
+    if points_type == 'standard':
         df['Points_standard'] = standard_points + (df['Pass_TD'] * 4)
         
     # half-ppr    
-    elif points == 'half-ppr':
+    elif points_type == 'half-ppr':
         df['Points_half-ppr'] = standard_points + (df['Pass_TD'] * 4) + (df['Rec_Rec'] * 0.5)
 
     # ppr    
-    elif points == 'ppr':
+    elif points_type == 'ppr':
         df['Points_ppr'] = standard_points + (df['Pass_TD'] * 4) + (df['Rec_Rec'] * 1)
 
     # PPR scoring with 6pt passing TDs
-    elif points == '6':
+    elif points_type == '6':
         df['Points_6'] = standard_points + (df['Pass_TD'] * 6) + (df['Rec_Rec'] * 1)
 
     # point-per-game column
-    df['PPG_' + points] = (df['Points_' + points] / df['G']).fillna(0)
+    df['PPG_' + points_type] = (df['Points_' + points_type] / df['G']).fillna(0)
 
     # point-per-touch column
-    df['PPT_' + points] = (df['Points_' + points] / df['Touches']).fillna(0)
+    df['PPT_' + points_type] = (df['Points_' + points_type] / df['Touches']).fillna(0)
 
     return df
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def add_rank_cols(df):
+def add_rank_cols(df, points_type):
     """
     Extract the points column from df and add total Points, PPG, and PPT rank columns to df.
 
     Args:
     - df (pd.DataFrame): DataFrame containing player data.
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
 
     Returns:
     - pd.DataFrame: DataFrame with added rank columns.
@@ -179,10 +180,6 @@ def add_rank_cols(df):
     # some groups we will be using
     year_groups = df.groupby('Year')
     pos_groups = df.groupby(['Year', 'Pos'])
-
-    # extract the suffix from the points column (e.g., "_half-ppr")
-    points_col = next(col for col in df.columns if col.startswith('Points_'))
-    points_type = points_col.replace('Points', '')
     
     # create mapping for each metric and corresponding grouping
     metrics = ['Points', 'PPG', 'PPT']
@@ -209,14 +206,15 @@ def add_rank_cols(df):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def add_vorp_cols(df, num_teams=12, wr3=True):
+def add_vorp_cols(df, points_type, num_teams=12, wr3=True):
     """
     Add VORP columns to the dataframe using the default Underdog fantasy lineup (12 teams, 3 WRs).
 
     Args:
     - df (pd.DataFrame): The dataframe containing player data.
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
     - num_teams (int): The number of teams in the league.
-    - wr3 (bool): Whether to include a 3rd WR in the lineup.
+    - wr3 (bool): Whether to include a 3rd WR in the lineup. If false, a 2WR format is implied.
 
     Returns:
     - df (pd.DataFrame): The dataframe with VORP columns added.
@@ -224,10 +222,6 @@ def add_vorp_cols(df, num_teams=12, wr3=True):
 
     # define the replacement rank based on num teams and 3WR format
     replacement_ranks = {'QB': num_teams, 'RB': int(num_teams * 2.5), 'WR': int(num_teams * 2.5 + True), 'TE': num_teams}
-
-    # extract the suffix from the points column (e.g., "_half-ppr")
-    points_col = next(col for col in df.columns if col.startswith('Points_'))
-    points_type = points_col.replace('Points', '')
 
     # iterate through the position groups
     for (year, pos), group in df.groupby(['Year', 'Pos']):
@@ -252,20 +246,17 @@ def add_vorp_cols(df, num_teams=12, wr3=True):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def add_target_cols(df):
+def add_target_cols(df, points_type):
     """
     Add Total and PPG target columns to the dataframe.
 
     Args:
     - df (pd.DataFrame): The dataframe containing player data.
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
 
     Returns:
     - df (pd.DataFrame): The dataframe with target columns added.
     """
-
-    # extract the suffix from the points column (e.g., "_half-ppr")
-    points_col = next(col for col in df.columns if col.startswith('Points_'))
-    points_type = points_col.replace('Points', '')
 
     # group by each player and shift the points column by 1
     df['PointsTarget' + points_type] = df.groupby('Key')['Points' + points_type].shift(-1)
