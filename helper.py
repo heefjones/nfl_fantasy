@@ -125,11 +125,15 @@ def add_point_cols(df, points):
 
     Args:
     - df (pd.DataFrame): The dataframe to add point columns to.
-    - points (dict): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
+    - points (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
 
     Returns:
     - df (pd.DataFrame): The dataframe with point column added.
     """
+
+    # error handling
+    if points not in ['standard', 'half-ppr', 'ppr', '6']:
+        raise ValueError("Invalid points type. Choose from 'standard', 'half-ppr', 'ppr', or '6'.")
 
     # calculate standard points without passing TDs
     standard_points = (df['Pass_Yds'] * 0.04) + (df['Pass_Int'] * -1) + (df['Rush_Yds'] * 0.1) + \
