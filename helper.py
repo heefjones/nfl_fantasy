@@ -40,19 +40,27 @@ np.random.seed(SEED)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-# cleaning.ipynb
+# eda.ipynb
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def load_data(file_paths, multi_header=False, pff=False):
+def load_data(path, pff=False):
     """
-    Load data from CSV files into a single DataFrame.
+    Combine CSV files from a data directory into a single DataFrame.
 
     Args:
+    - path (str): The path to the directory containing the CSV files.
+    - pff (bool): If True, load PFF data. If False, load non-PFF data.
+
+    Returns:
+    - df (pd.DataFrame): A DataFrame containing the combined data from all CSV files.
     """
 
+    # format path
+    path = f'./data/{path}'
+
     # get all csv files in the 'pass_data' directory
-    pass_paths = [os.path.join('./data/passing', file) for file in os.listdir('./data/passing') if file.endswith('.csv')]
+    file_paths = [os.path.join(path, file) for file in os.listdir(path) if file.endswith('.csv')]
 
     # list to hold dfs
     dfs = []
@@ -62,8 +70,8 @@ def load_data(file_paths, multi_header=False, pff=False):
         # load the season into a df
         data = pd.read_csv(file_path)
 
-        # if multi_header is True, make the second row the column names and drop the first row
-        if multi_header:
+        # for non-pff data, handle multi-header
+        if not pff:
             data.columns = data.loc[0]
             data = data.drop(0)
         
@@ -77,7 +85,7 @@ def load_data(file_paths, multi_header=False, pff=False):
     # stack dataframes together
     df = pd.concat(dfs, axis=0, ignore_index=True)
 
-    # fantasy seasons
+    # non-pff data
     if not pff:
         # drop rank/point columns (we will be recalculating these)
         df = df.drop(columns=['Rk', 'FantPt', 'PPR', 'DKPt', 'FDPt', 'VBD', 'PosRank', 'OvRank'])
@@ -236,15 +244,18 @@ def add_vorp_cols(df, points_type, num_teams=12, wr3=True):
             # get the replacement rank for the current position, subtract 1 to get the index
             rank = int(replacement_ranks[pos] - 1)
 
+            # format col name
+            col_name = rank_type + '_' + points_type
+
             # sort group
-            group = group.sort_values(rank_type + points_type, ascending=False)
+            group = group.sort_values(col_name, ascending=False)
 
             # get replacement player points for the current position and scoring type
-            replacement = group.iloc[rank][rank_type + points_type]
+            replacement = group.iloc[rank][col_name]
 
             # add VORP column
-            df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + '_' + 'VORP' + points_type] = \
-            df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + points_type] - replacement
+            df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + '_VORP_' + points_type] = \
+            df.loc[(df['Year'] == year) & (df['Pos'] == pos), col_name] - replacement
 
     return df
 
@@ -263,8 +274,8 @@ def add_target_cols(df, points_type):
     """
 
     # group by each player and shift the points column by 1
-    df['PointsTarget' + points_type] = df.groupby('Key')['Points' + points_type].shift(-1)
-    df['PPGTarget' + points_type] = df.groupby('Key')['PPG' + points_type].shift(-1)
+    df['PointsTarget_' + points_type] = df.groupby('Key')['Points_' + points_type].shift(-1)
+    df['PPGTarget_' + points_type] = df.groupby('Key')['PPG_' + points_type].shift(-1)
 
     return df
 
