@@ -465,12 +465,13 @@ def create_features(df):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def cross_val(df, estimator, folds=5):
+def cross_val(df, target_col, estimator, folds=5):
     """
     Perform KFold cross validation on a given estimator and store evaluation metrics.
     
     Args:
     - df (pd.DataFrame): Data to model.
+    - target_col (str): Name of the target column in the DataFrame.
     - estimator (sklearn estimator): Estimator to use for modeling.
     - folds (int): Number of cross-validation folds to use. Default is 5.
     
@@ -479,11 +480,11 @@ def cross_val(df, estimator, folds=5):
     """
 
     # non-feature cols
-    non_feat_cols = ['Player', 'Tm', 'Key', 'Year', 'PPGTarget_half-ppr']
+    non_feat_cols = ['Player', 'Tm', 'Key', 'Year'] + [target_col]
 
     # define X and y
     X = df.drop(non_feat_cols, axis=1)
-    y = df['PPGTarget_half-ppr']
+    y = df[target_col]
 
     # cross_validate
     cv = KFold(n_splits=folds, shuffle=True, random_state=SEED)
