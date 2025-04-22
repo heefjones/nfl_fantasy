@@ -403,7 +403,7 @@ def create_features(df):
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'PointsTarget_half-ppr', 'Age', 'Exp']
+    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'PPG_half-ppr', 'Age', 'Exp']
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
     # list of expressions for original columns and computed stats
