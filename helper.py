@@ -414,8 +414,8 @@ def create_features(df):
 
     # iterate through each column to be aggregated
     for col in agg_cols:
-        # rolling stats (3 and 6 year)
-        for n in [3, 6]:
+        # rolling stats (n years)
+        for n in [3]:
             base_exprs.extend([
                 pl.col(col)
                 .rolling_mean(window_size=n, min_periods=1)
@@ -503,7 +503,7 @@ def cross_val(df, estimator, folds=5):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def xgb_cv(max_depth, learning_rate, gamma, subsample, colsample_bytree, min_child_weight, X, y):
+def xgb_cross_val(max_depth, learning_rate, gamma, subsample, colsample_bytree, min_child_weight, X, y):
     """
     Objective function for XGBoost hyperparameter tuning using Bayesian Optimization.
 
@@ -541,7 +541,7 @@ def xgb_cv(max_depth, learning_rate, gamma, subsample, colsample_bytree, min_chi
 
 def run_xgb_bayesopt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=2):
     """
-    Run BayesianOptimization on xgb_cv for one (X, y) dataset.
+    Run BayesianOptimization on xgb_cross_val for one (X, y) dataset.
 
     Args:
       - X (pd.DataFrame or np.ndarray): Features
@@ -556,9 +556,9 @@ def run_xgb_bayesopt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbo
       - optimizer (BayesianOptimization): fitted optimizer object
     """
     
-    # black‐box function wrapping xgb_cv
+    # black‐box function wrapping xgb_cross_val
     def _f(max_depth, learning_rate, gamma, subsample, colsample_bytree, min_child_weight):
-        return xgb_cv(
+        return xgb_cross_val(
             max_depth=int(max_depth),
             learning_rate=learning_rate,
             gamma=gamma,
