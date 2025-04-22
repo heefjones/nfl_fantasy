@@ -1,5 +1,6 @@
 # data science
 import pandas as pd
+import polars as pl
 import re
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,15 +12,11 @@ import gc
 
 # machine learning
 from tqdm import tqdm
-from sklearn.linear_model import LinearRegression
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
-from sklearn.model_selection import train_test_split, cross_validate, cross_val_predict, KFold
+from sklearn.model_selection import cross_validate, KFold, cross_val_score
 from sklearn.metrics import r2_score, root_mean_squared_error
+from sklearn.linear_model import LinearRegression
 from xgboost import XGBRegressor
+from bayes_opt import BayesianOptimization
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -282,6 +279,17 @@ def add_target_cols(df, points_type):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def add_percent_columns(df, formulas):
+    """
+    Add percentage columns to the DataFrame based on given formulas.
+
+    Args:
+    - df (pd.DataFrame): The DataFrame to add percentage columns to.
+    - formulas (dict): A dictionary where keys are new column names and values are tuples of (numerator, denominator).
+    
+    Returns:
+    - df (pd.DataFrame): The DataFrame with added percentage columns.
+    """
+
     # iterate through formulas
     for new_col, (numerator, denominator) in formulas.items():
         # normalize
@@ -292,6 +300,17 @@ def add_percent_columns(df, formulas):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def prefix_df(df, prefix):
+    """
+    Prefix all columns in the DataFrame with a given prefix.
+
+    Args:
+    - df (pd.DataFrame): The DataFrame to prefix.
+    - prefix (str): The prefix to add to the columns.
+
+    Returns:
+    - df (pd.DataFrame): The DataFrame with prefixed columns.
+    """
+
     # rename all columns with prefix
     df.columns = [f'{prefix}_{col}' for col in df.columns]
 
@@ -305,6 +324,17 @@ def prefix_df(df, prefix):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def clean_pff_data(pff_data, prefix):
+    """
+    Clean PFF data by normalizing certain columns and dropping unnecessary ones.
+
+    Args:
+    - pff_data (pd.DataFrame): The PFF data to clean.
+    - prefix (str): The prefix to add to the columns.
+
+    Returns:
+    - pff_data (pd.DataFrame): The cleaned PFF data.
+    """
+
     # passing data
     if prefix == 'Pass':
         formulas = {'Dropback%': ('dropbacks', 'passing_snaps'), 'Aimed_passes%': ('aimed_passes', 'attempts'), 
@@ -351,34 +381,196 @@ def clean_pff_data(pff_data, prefix):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
 # preds.ipynb
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def create_features(df):
+    """
+    Create features for each player.
 
+    Args:
+    - df (pd.dataframe): Player data.
+
+    Returns:
+    - (pl.dataframe): Dataframe with new features added.
+    """
+
+    # convert to polars dataframe and sort
+    df = pl.from_pandas(df).sort(["Key", "Year"])
+
+    # convert to a lazy frame for efficiency
+    lazy_df = df.lazy()
+
+    # define cols to aggregate
+    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'PointsTarget_half-ppr', 'Age', 'Exp']
+    agg_cols = [col for col in df.columns if col not in non_agg_cols]
+
+    # list of expressions for original columns and computed stats
+    base_exprs = [pl.col('*')]
+
+    # expressions that rely on prior aliases
+    post_exprs = []
+
+    # iterate through each column to be aggregated
+    for col in agg_cols:
+        # rolling stats (3 and 6 year)
+        for n in [3, 6]:
+            base_exprs.extend([
+                pl.col(col)
+                .rolling_mean(window_size=n, min_periods=1)
+                .over('Key')
+                .alias(f'{col}_{n}y_mean'),
+                pl.col(col)
+                .rolling_std(window_size=n, min_periods=1)
+                .over('Key')
+                .alias(f'{col}_{n}y_std')])
+
+        # cumulative career mean & std
+        cum_sum = pl.col(col).cum_sum().over('Key')
+        cum_count = (pl.col('Exp') + 1)
+        cum_mean = (cum_sum / cum_count).alias(f'{col}_career_mean')
+        sum_sq = pl.col(col).pow(2).cum_sum().over('Key')
+        cum_var = ((sum_sq - cum_sum.pow(2) / cum_count) / cum_count)
+        cum_std = cum_var.sqrt().alias(f'{col}_career_std')
+        base_exprs.extend([cum_mean, cum_std])
+
+        # percent-change from previous year
+        prev = pl.col(col).shift(1).over('Key')
+        base_exprs.extend([((pl.col(col) / prev) - 1).alias(f'{col}_pct_change_prev')])
+
+        # trend slope relative to career (expanding linear regression)
+        sum_year = pl.col('Year').cum_sum().over('Key')
+        sum_year_sq = pl.col('Year').pow(2).cum_sum().over('Key')
+        sum_y = cum_sum
+        sum_xy = (pl.col(col) * pl.col('Year')).cum_sum().over('Key')
+        x_mean = (sum_year / cum_count)
+        y_mean = (sum_y / cum_count)
+        cov = (sum_xy / cum_count) - (x_mean * y_mean)
+        var_x = (sum_year_sq / cum_count) - x_mean.pow(2)
+        slope = (cov / var_x).alias(f'{col}_career_trend_slope')
+        base_exprs.append(slope)
+
+        # momentum: difference between recent (3y) mean and career mean
+        post_exprs.append((pl.col(f'{col}_3y_mean') - pl.col(f'{col}_career_mean')).alias(f'{col}_momentum'))
+
+    # add the new columns to df
+    lazy_df = lazy_df.with_columns(base_exprs)
+    lazy_df = lazy_df.with_columns(post_exprs)
+
+    # collect results back into a pandas df
+    df_pandas = lazy_df.collect().to_pandas()
+
+    # fill nulls and infs with 0
+    df_pandas = df_pandas.replace([np.inf, -np.inf], np.nan).fillna(0)
+
+    # sort columns 
+    return df_pandas[sorted(df_pandas.columns)]
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def cross_val(df, estimator, folds=5):
+    """
+    Perform KFold cross validation on a given estimator and store evaluation metrics.
+    
+    Args:
+    - df (pd.DataFrame): Data to model.
+    - estimator (sklearn estimator): Estimator to use for modeling.
+    - folds (int): Number of cross-validation folds to use. Default is 5.
+    
+    Returns:
+    - pd.DataFrame: DataFrame containing the mean and standard deviation of RMSE and R2 scores for training and validation sets.
+    """
 
+    # non-feature cols
+    non_feat_cols = ['Player', 'Tm', 'Key', 'Year', 'PointsTarget_half-ppr']
+
+    # define X and y
+    X = df.drop(non_feat_cols, axis=1)
+    y = df['PointsTarget_half-ppr']
+
+    # cross_validate
+    cv = KFold(n_splits=folds, shuffle=True, random_state=SEED)
+    scoring = {'rmse': 'neg_root_mean_squared_error', 'r2': 'r2'}
+    results = cross_validate(estimator, X, y, cv=cv, scoring=scoring, return_train_score=True, n_jobs=-1)
+    
+    # assemble into a df
+    scores = pd.DataFrame({'train_rmse': -results['train_rmse'], 'val_rmse': -results['test_rmse'], 'train_r2': results['train_r2'], 'val_r2': results['test_r2']})
+    
+    # aggregate
+    summary = scores.agg(['mean', 'std'])
+    return summary
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def xgb_cv(max_depth, learning_rate, gamma, subsample, colsample_bytree, min_child_weight, X, y):
+    """
+    Objective function for XGBoost hyperparameter tuning using Bayesian Optimization.
+
+    Args:
+    - XGBRegressor parameters: max_depth, learning_rate, gamma, subsample, colsample_bytree, min_child_weight
+    - X (pd.DataFrame): Feature set.
+    - y (pd.Series): Target variable.
+
+    Returns:
+    - scores.mean() (float): Mean RMSE from 5-fold cross-validation.
+    """
+
+    # define XGBoost parameters
+    params = {'n_estimators': 1000,
+        'max_depth': int(max_depth),
+        'learning_rate': learning_rate,
+        'gamma': gamma,
+        'subsample': subsample,
+        'colsample_bytree': colsample_bytree,
+        'min_child_weight': int(min_child_weight),
+        'random_state': SEED, 
+        'n_jobs': -1}
+
+    # create pipeline
+    xgb = XGBRegressor(**params)
+
+    # 10-fold cross-validation
+    kf = KFold(n_splits=5, shuffle=True, random_state=SEED)
+    scores = cross_val_score(xgb, X, y, cv=kf, scoring='neg_root_mean_squared_error', n_jobs=-1)
+
+    # return mean cv score
+    return scores.mean()
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def run_xgb_bayesopt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=2):
+    """
+    Run BayesianOptimization on xgb_cv for one (X, y) dataset.
+
+    Args:
+      - X (pd.DataFrame or np.ndarray): Features
+      - y (pd.Series or np.ndarray): Target
+      - param_bounds (dict): Boundaries for BO
+      - seed (int): random_state for reproducibility
+      - init_points (int): number of random initial points
+      - n_iter (int): number of Bayesian iters
+      - verbose (int): verbosity level
+
+    Returns:
+      - optimizer (BayesianOptimization): fitted optimizer object
+    """
+    
+    # black‐box function wrapping xgb_cv
+    def _f(max_depth, learning_rate, gamma, subsample, colsample_bytree, min_child_weight):
+        return xgb_cv(
+            max_depth=int(max_depth),
+            learning_rate=learning_rate,
+            gamma=gamma,
+            subsample=subsample,
+            colsample_bytree=colsample_bytree,
+            min_child_weight=int(min_child_weight),
+            X=X, y=y)
+
+    # set up the optimizer
+    optimizer = BayesianOptimization(f=_f, pbounds=param_bounds, random_state=seed, verbose=verbose)
+    optimizer.maximize(init_points=init_points, n_iter=n_iter)
+    return optimizer
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
