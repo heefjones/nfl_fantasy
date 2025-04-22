@@ -403,10 +403,10 @@ def create_features(df):
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'PPG_half-ppr', 'Age', 'Exp']
+    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'PPGTarget_half-ppr', 'Age', 'Exp']
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
-    # list of expressions for original columns and computed stats
+    # list of expressions for original columns
     base_exprs = [pl.col('*')]
 
     # expressions that rely on prior aliases
@@ -434,10 +434,6 @@ def create_features(df):
         cum_var = ((sum_sq - cum_sum.pow(2) / cum_count) / cum_count)
         cum_std = cum_var.sqrt().alias(f'{col}_career_std')
         base_exprs.extend([cum_mean, cum_std])
-
-        # percent-change from previous year
-        prev = pl.col(col).shift(1).over('Key')
-        base_exprs.extend([((pl.col(col) / prev) - 1).alias(f'{col}_pct_change_prev')])
 
         # trend slope relative to career (expanding linear regression)
         sum_year = pl.col('Year').cum_sum().over('Key')
@@ -483,11 +479,11 @@ def cross_val(df, estimator, folds=5):
     """
 
     # non-feature cols
-    non_feat_cols = ['Player', 'Tm', 'Key', 'Year', 'PointsTarget_half-ppr']
+    non_feat_cols = ['Player', 'Tm', 'Key', 'Year', 'PPGTarget_half-ppr']
 
     # define X and y
     X = df.drop(non_feat_cols, axis=1)
-    y = df['PointsTarget_half-ppr']
+    y = df['PPGTarget_half-ppr']
 
     # cross_validate
     cv = KFold(n_splits=folds, shuffle=True, random_state=SEED)
