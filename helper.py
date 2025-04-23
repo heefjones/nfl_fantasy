@@ -487,7 +487,7 @@ def cross_val(df, target_col, estimator, folds=5):
     """
 
     # non-feature cols
-    non_feat_cols = ['Player', 'Tm', 'Key', 'Year'] + [target_col]
+    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year'] + [target_col]
 
     # define X and y
     X = df.drop(non_feat_cols, axis=1)
