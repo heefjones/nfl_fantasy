@@ -745,7 +745,7 @@ def get_2025_preds(df, model):
     - preds_df (pd.DataFrame): DataFrame containing 2025 predictions.
     """
 
-    # get all data
+    # get X and y
     X, y = get_X_y(df)
 
     # predict
