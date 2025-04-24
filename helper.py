@@ -376,7 +376,7 @@ def clean_pff_data(pff_data, prefix):
                               'Int_per_target': ('interceptions', 'targets'), 'YAC%': ('yards_after_catch', 'yards')}
         cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'avoided_tackles', 'contested_receptions', 'contested_targets', 'declined_penalties', 'drops', 
                         'first_downs', 'franchise_id', 'fumbles', 'grades_pass_block', 'inline_snaps', 'pass_blocks', 'pass_plays', 'penalties', 'receptions', 'routes', 'slot_snaps', 
-                        'targets', 'touchdowns', 'wide_snaps', 'yards', 'yards_after_catch']
+                        'targets', 'touchdowns', 'wide_snaps', 'yards', 'yards_after_catch', 'grades_hands_fumble', 'grades_offense']
 
     # normalize
     pff_data = add_percent_columns(pff_data, formulas)
@@ -764,6 +764,48 @@ def get_2025_preds(df, model):
     preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
 
     return preds_df
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def plot_2025_preds(preds_df, xmin=0, xmax=25):
+    """
+    Visualize the model's 2025 predictions.
+
+    Args:
+    - preds_df (pd.DataFrame): DataFrame containing the model's predictions.
+    - xmin (int): Minimum x-axis value for the plot.
+    - xmax (int): Maximum x-axis value for the plot.
+
+    Returns:
+    - None
+    """
+
+    # reverse the df for proper display
+    preds_df = preds_df[::-1]
+
+    # get length of preds
+    num_players = preds_df.shape[0]
+
+    # dynamic line and marker sizes
+    linesize = max(2, min(12, 144 / num_players))
+    markersize = linesize * 2
+
+    # plot
+    plt.figure(figsize=(14, 10))
+    plt.hlines(y=preds_df['player_with_rank'], xmin=xmin, xmax=preds_df['y_pred'], color=preds_df['team_color'], lw=linesize)
+    plt.plot(preds_df['y_pred'], preds_df['player_with_rank'], 'o', color='black', markersize=markersize)
+    plt.title('2025 Predictions with XGBoost (Non-Rookies)', fontsize=24)
+    plt.xlabel('Predicted Fantasy PPG', fontsize=24)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=markersize)
+    plt.xlim(xmin, xmax)
+    plt.margins(x=0, y=0.04)
+
+    # annotate
+    for i, row in preds_df.iterrows():
+        plt.text(row['y_pred'] + 0.3, row['player_with_rank'], f'{row["y_pred"]:.1f}', va='center', fontsize=markersize)
+    plt.tight_layout()
+    plt.show()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
