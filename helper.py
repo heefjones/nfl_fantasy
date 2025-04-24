@@ -347,12 +347,18 @@ def clean_pff_player_data(pff_data, prefix):
 
     # passing data
     if prefix == 'Pass':
-        formulas = {'Dropback%': ('dropbacks', 'passing_snaps'), 'Aimed_passes%': ('aimed_passes', 'attempts'), 
-                        'Dropped_passes%': ('drops', 'aimed_passes'), 'Batted_passes%': ('bats', 'aimed_passes'), 
-                        'Thrown_away%': ('thrown_aways', 'passing_snaps'), 'Pressure%': ('def_gen_pressures', 'passing_snaps'), 
-                        'Scramble%': ('scrambles', 'passing_snaps'), 'Sack%': ('sacks', 'passing_snaps'), 
-                        'Pressure_to_sack%': ('sacks', 'def_gen_pressures'), 'BTT%': ('big_time_throws', 'aimed_passes'), 
-                        'TWP%': ('turnover_worthy_plays', 'aimed_passes'), 'First_down%': ('first_downs', 'attempts')}
+        formulas = {'Dropback%': ('dropbacks', 'passing_snaps'), 
+                    'Aimed_passes%': ('aimed_passes', 'attempts'), 
+                    'Dropped_passes%': ('drops', 'aimed_passes'), 
+                    'Batted_passes%': ('bats', 'aimed_passes'), 
+                    'Thrown_away%': ('thrown_aways', 'passing_snaps'), 
+                    'Pressure%': ('def_gen_pressures', 'passing_snaps'), 
+                    'Scramble%': ('scrambles', 'passing_snaps'), 
+                    'Sack%': ('sacks', 'passing_snaps'), 
+                    'Pressure_to_sack%': ('sacks', 'def_gen_pressures'), 
+                    'BTT%': ('big_time_throws', 'aimed_passes'), 
+                    'TWP%': ('turnover_worthy_plays', 'aimed_passes'), 
+                    'First_down%': ('first_downs', 'attempts')}
         cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'bats', 'big_time_throws', 'btt_rate', 'completion_percent', 
              'completions', 'declined_penalties', 'drop_rate', 'drops', 'grades_run', 'franchise_id', 
              'interceptions', 'penalties', 'pressure_to_sack_rate', 'qb_rating', 'sack_percent', 'scrambles', 'spikes', 'thrown_aways', 
@@ -360,23 +366,29 @@ def clean_pff_player_data(pff_data, prefix):
     
     # rushing data
     elif prefix == 'Rush':
-        formulas = {'Team_Rush%': ('attempts', 'run_plays'), 'Avoided_tackles_per_attempt': ('avoided_tackles', 'attempts'), 
-                 '10+_yard_run%': ('explosive', 'attempts'), '15+_yard_run%': ('breakaway_attempts', 'attempts'), 
-                 '15+_yard_run_yards%': ('breakaway_yards', 'yards'), 'First_down%': ('first_downs', 'attempts'), 
-                 'Gap%': ('gap_attempts', 'attempts'), 'Zone%': ('zone_attempts', 'attempts'), 
-                 'YCO_per_attempt': ('yards_after_contact', 'attempts')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 
-             'declined_penalties', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'explosive', 'first_downs', 'franchise_id', 'fumbles', 
+        formulas = {'Team_Rush%': ('attempts', 'run_plays'), 
+                    'Avoided_tackles_per_attempt': ('avoided_tackles', 'attempts'), 
+                    '10+_yard_run%': ('explosive', 'attempts'), 
+                    '15+_yard_run%': ('breakaway_attempts', 'attempts'), 
+                    '15+_yard_run_yards%': ('breakaway_yards', 'yards'), 
+                    'First_down%': ('first_downs', 'attempts'), 
+                    'Gap%': ('gap_attempts', 'attempts'), 
+                    'Zone%': ('zone_attempts', 'attempts'), 
+                    'YCO_per_attempt': ('yards_after_contact', 'attempts')}
+        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 
+             'declined_penalties', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'first_downs', 'franchise_id', 'fumbles', 
              'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run_block', 'penalties', 'rec_yards', 'receptions', 
              'routes', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'attempts', 'run_plays']
     
     # receiving data
     elif prefix == 'Rec':
-        formulas = {'Avoided_tackles_per_reception': ('avoided_tackles', 'receptions'), 'First_down%': ('first_downs', 'receptions'), 
-                              'Int_per_target': ('interceptions', 'targets'), 'YAC%': ('yards_after_catch', 'yards')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'avoided_tackles', 'contested_receptions', 'contested_targets', 'declined_penalties', 'drops', 
-                        'first_downs', 'franchise_id', 'fumbles', 'grades_pass_block', 'inline_snaps', 'pass_blocks', 'pass_plays', 'penalties', 'receptions', 'routes', 'slot_snaps', 
-                        'targets', 'touchdowns', 'wide_snaps', 'yards', 'yards_after_catch', 'interceptions']
+        formulas = {'Avoided_tackles_per_reception': ('avoided_tackles', 'receptions'), 
+                    'First_down%': ('first_downs', 'receptions'), 
+                    'Int_per_target': ('interceptions', 'targets'), 
+                    'YAC%': ('yards_after_catch', 'yards'), 
+                    'Contested_catch_rate': ('contested_receptions', 'contested_targets')}
+        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'declined_penalties', 'drops', 'first_downs', 'franchise_id', 'fumbles', 
+                        'grades_pass_block', 'pass_blocks', 'pass_plays', 'penalties', 'receptions', 'targets', 'touchdowns', 'yards', 'yards_after_catch', 'interceptions']
 
     # normalize
     pff_data = add_percent_columns(pff_data, formulas)
