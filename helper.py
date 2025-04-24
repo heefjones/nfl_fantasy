@@ -430,11 +430,11 @@ def create_features(df):
         for n in [3]:
             base_exprs.extend([
                 pl.col(col)
-                .rolling_mean(window_size=n, min_periods=1)
+                .rolling_mean(window_size=n, min_samples=1)
                 .over('Key')
                 .alias(f'{col}_{n}y_mean'),
                 pl.col(col)
-                .rolling_std(window_size=n, min_periods=1)
+                .rolling_std(window_size=n, min_samples=1)
                 .over('Key')
                 .alias(f'{col}_{n}y_std')])
 
@@ -540,7 +540,7 @@ def cross_val(df, target_col, estimator, folds=5):
     
     # aggregate
     summary = scores.agg(['mean', 'std'])
-    return summary
+    return summary[['train_rmse', 'train_r2', 'val_rmse', 'val_r2']]
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
