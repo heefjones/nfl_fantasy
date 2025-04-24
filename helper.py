@@ -353,7 +353,7 @@ def clean_pff_data(pff_data, prefix):
                         'Scramble%': ('scrambles', 'passing_snaps'), 'Sack%': ('sacks', 'passing_snaps'), 
                         'Pressure_to_sack%': ('sacks', 'def_gen_pressures'), 'BTT%': ('big_time_throws', 'aimed_passes'), 
                         'TWP%': ('turnover_worthy_plays', 'aimed_passes'), 'First_down%': ('first_downs', 'attempts')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'dropbacks', 'aimed_passes', 'attempts', 'bats', 'big_time_throws', 'btt_rate', 'completion_percent', 
+        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'dropbacks', 'passing_snaps', 'aimed_passes', 'attempts', 'bats', 'big_time_throws', 'btt_rate', 'completion_percent', 
              'completions', 'declined_penalties', 'def_gen_pressures', 'drop_rate', 'drops', 'grades_run', 'franchise_id', 
              'hit_as_threw', 'interceptions', 'penalties', 'pressure_to_sack_rate', 'qb_rating', 'sack_percent', 'sacks', 'scrambles', 'spikes', 'thrown_aways', 
              'touchdowns', 'turnover_worthy_plays', 'twp_rate', 'yards', 'ypa', 'first_downs']
@@ -376,7 +376,7 @@ def clean_pff_data(pff_data, prefix):
                               'Int_per_target': ('interceptions', 'targets'), 'YAC%': ('yards_after_catch', 'yards')}
         cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'avoided_tackles', 'contested_receptions', 'contested_targets', 'declined_penalties', 'drops', 
                         'first_downs', 'franchise_id', 'fumbles', 'grades_pass_block', 'inline_snaps', 'pass_blocks', 'pass_plays', 'penalties', 'receptions', 'routes', 'slot_snaps', 
-                        'targets', 'touchdowns', 'wide_snaps', 'yards', 'yards_after_catch']
+                        'targets', 'touchdowns', 'wide_snaps', 'yards', 'yards_after_catch', 'interceptions']
 
     # normalize
     pff_data = add_percent_columns(pff_data, formulas)
