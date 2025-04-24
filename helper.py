@@ -333,9 +333,9 @@ def prefix_df(df, prefix):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def clean_pff_data(pff_data, prefix):
+def clean_pff_player_data(pff_data, prefix):
     """
-    Clean PFF data by normalizing certain columns and dropping unnecessary ones.
+    Clean PFF player data by normalizing certain columns and dropping unnecessary ones.
 
     Args:
     - pff_data (pd.DataFrame): The PFF data to clean.
@@ -353,9 +353,9 @@ def clean_pff_data(pff_data, prefix):
                         'Scramble%': ('scrambles', 'passing_snaps'), 'Sack%': ('sacks', 'passing_snaps'), 
                         'Pressure_to_sack%': ('sacks', 'def_gen_pressures'), 'BTT%': ('big_time_throws', 'aimed_passes'), 
                         'TWP%': ('turnover_worthy_plays', 'aimed_passes'), 'First_down%': ('first_downs', 'attempts')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'dropbacks', 'passing_snaps', 'aimed_passes', 'attempts', 'bats', 'big_time_throws', 'btt_rate', 'completion_percent', 
-             'completions', 'declined_penalties', 'def_gen_pressures', 'drop_rate', 'drops', 'grades_run', 'franchise_id', 
-             'hit_as_threw', 'interceptions', 'penalties', 'pressure_to_sack_rate', 'qb_rating', 'sack_percent', 'sacks', 'scrambles', 'spikes', 'thrown_aways', 
+        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'bats', 'big_time_throws', 'btt_rate', 'completion_percent', 
+             'completions', 'declined_penalties', 'drop_rate', 'drops', 'grades_run', 'franchise_id', 
+             'interceptions', 'penalties', 'pressure_to_sack_rate', 'qb_rating', 'sack_percent', 'scrambles', 'spikes', 'thrown_aways', 
              'touchdowns', 'turnover_worthy_plays', 'twp_rate', 'yards', 'ypa', 'first_downs']
     
     # rushing data
@@ -365,10 +365,10 @@ def clean_pff_data(pff_data, prefix):
                  '15+_yard_run_yards%': ('breakaway_yards', 'yards'), 'First_down%': ('first_downs', 'attempts'), 
                  'Gap%': ('gap_attempts', 'attempts'), 'Zone%': ('zone_attempts', 'attempts'), 
                  'YCO_per_attempt': ('yards_after_contact', 'attempts')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'attempts', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 
+        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 
              'declined_penalties', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'explosive', 'first_downs', 'franchise_id', 'fumbles', 
-             'gap_attempts', 'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run_block', 'penalties', 'rec_yards', 'receptions', 
-             'routes', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'run_plays', 'zone_attempts']
+             'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run_block', 'penalties', 'rec_yards', 'receptions', 
+             'routes', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'attempts', 'run_plays']
     
     # receiving data
     elif prefix == 'Rec':
@@ -387,7 +387,66 @@ def clean_pff_data(pff_data, prefix):
     # add prefix
     pff_data = prefix_df(pff_data, prefix)
 
-    return pff_data
+    return pff_data.fillna(0)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def clean_pff_team_data(pff_data):
+    """
+    Clean PFF team data by normalizing certain columns and dropping unnecessary ones.
+
+    Args:
+    - pff_data (pd.DataFrame): The PFF data to clean.
+
+    Returns:
+    - pff_data (pd.DataFrame): The cleaned PFF data.
+    """
+
+    # add 'Win%' col
+    pff_data['Win%'] = pff_data['Wins'] / (pff_data['Wins'] + pff_data['Losses'])
+
+    # calculate PPG and PPG allowed
+    pff_data['PPG'] = pff_data['Points For'] / (pff_data['Wins'] + pff_data['Losses'])
+    pff_data['PPG_allowed'] = pff_data['Points Against'] / (pff_data['Wins'] + pff_data['Losses'])
+
+    # create 'Pass Defense Grade' col as average of 'Pass Rush' and 'Pass Coverage' grades
+    pff_data['Pass Defense Grade'] = ((pff_data['Pass Rush Grade'] + pff_data['Coverage Grade'])) / 2
+
+    # add 'Team' to the beginning of each column name
+    pff_data.columns = ['Team_' + col for col in pff_data.columns]
+
+    # remove 'Team' from 'Tm' and 'Year'
+    pff_data['Tm'] = pff_data['Team_Tm']
+    pff_data['Year'] = pff_data['Team_Year']
+
+    # drop columns
+    return pff_data.drop(columns=['Team_Tm', 'Team_Year', 'Team_Points For', 'Team_Points Against', 'Team_Wins', 'Team_Losses']).fillna(0)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def consolidate_pos_columns(df, col_name):
+    """
+    Consolidate duplicate columns like 'Pass_X', 'Rush_X', 'Rec_X' into a single column
+    based on player position.
+
+    Args:
+    - df (pd.DataFrame): your dataframe
+    - col_name (str): e.g. 'grades_offense' or 'grades_hands_fumble'
+
+    Returns:
+    - df (pd.DataFrame): dataframe with the new consolidated column and dropped duplicates
+    """
+
+    # get column names
+    pass_col, rush_col, rec_col = f'Pass_{col_name}', f'Rush_{col_name}', f'Rec_{col_name}'
+
+    # map positional conditions to the correct column 
+    conditions = [df['Pos'] == 'QB', df['Pos'] == 'RB', df['Pos'].isin(['WR', 'TE'])]
+    choices = [df[pass_col], df[rush_col], df[rec_col]]
+    df['grades_offense'] = np.select(conditions, choices, default=np.nan)
+
+    # drop the original columns
+    return df.drop([pass_col, rush_col, rec_col], axis=1)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -397,7 +456,27 @@ def clean_pff_data(pff_data, prefix):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def create_features(df):
+def drop_total_volume_cols(df):
+    """
+    Drop total-season volume columns from the DataFrame.
+
+    Args:
+    - df (pd.DataFrame): The DataFrame to drop columns from.
+
+    Returns:
+    - df (pd.DataFrame): The DataFrame with dropped columns.
+    """
+
+    # drop non-normalized columns and a few redundant normalized columns
+    dropped_cols = ['G', 'GS', 'ProBowl', 'AllPro', 'Pass_Cmp', 'Pass_Att', 'Pass_Yds', 'Pass_TD', 'Pass_Int', 'Rush_Att', 'Rush_Yds', 'Rush_TD', 'Pass_Cmp%', 'Rec_Catch%', 'num_games', 'Touches', 
+                'Rec_Tgt', 'Rec_Rec', 'Rec_Yds', 'Rec_TD', 'Fmb', 'FmbLost', 'Scrim_TD', 'Scrim_Yds', 'Rush_Y/A', 'Rec_Y/R', 'Pass_Y/A', 
+                'Points_half-ppr', 'PointsOvrRank_half-ppr', 'PointsPosRank_half-ppr', 'Points_VORP_half-ppr', 'PointsTarget_half-ppr', 'PPG_VORP_half-ppr']
+    return df.drop(columns=dropped_cols)
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def create_features(df, target_col):
     """
     Create features for each player.
 
@@ -415,7 +494,7 @@ def create_features(df):
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'PPGTarget_half-ppr', 'Age', 'Exp']
+    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'Age', 'Exp'] + [target_col]
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
     # list of expressions for original columns
@@ -470,7 +549,7 @@ def create_features(df):
     df_pandas = lazy_df.collect().to_pandas()
 
     # fill nulls and infs with 0
-    non_target_cols = [col for col in df_pandas.columns if col != 'PPGTarget_half-ppr']
+    non_target_cols = [col for col in df_pandas.columns if col != target_col]
     df_pandas[non_target_cols] = df_pandas[non_target_cols].replace([np.inf, -np.inf], np.nan).fillna(0)
 
     # sort columns 
