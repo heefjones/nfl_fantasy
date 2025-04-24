@@ -633,14 +633,9 @@ def run_bayes_opt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def get_2024_preds(df, model, pos):
-    # non-feature cols
-    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'PPGTarget_half-ppr']
-
-    # define training data (before 2023) and test data (2023)
-    X_train = df.query('Year < 2023').drop(columns=non_feat_cols)
-    y_train = df.query('Year < 2023')['PPGTarget_half-ppr']
-    X_test = df.query('Year == 2023').drop(columns=non_feat_cols)
-    y_test = df.query('Year == 2023')['PPGTarget_half-ppr']
+    # get training data (before 2023) and test data (2023)
+    X_train, y_train = get_X_y(df.query('Year < 2023'))
+    X_test, y_test = get_X_y(df.query('Year == 2023'))
 
     # train model
     model.fit(X_train, y_train)
@@ -718,6 +713,30 @@ def plot_2024_preds(preds_df):
     plt.text(xmin + 3, ymax - 3, 'Over-predictions', fontsize=20, weight='semibold', color='red')
     plt.text(xmax - 5, ymin + 3, 'Under-predictions', fontsize=20, weight='semibold', color='red')
     plt.show()
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def get_2025_preds(df, model):
+    # get all data
+    X, y = get_X_y(df)
+
+    # train model
+    model.fit(X_train, y_train)
+
+    # make predictions
+    y_pred = model.predict(X_test)
+
+
+
+    # create a df for our predictions
+    preds_df = pd.DataFrame(data={'player': df.query('Year == 2023')['Player'].values, 'team': df.query('Year == 2023')['Tm'].values, 
+                              'y_true': y_test, 'y_pred': y_pred, 'error': (y_pred - y_test), 'pos': df.query('Year == 2023')['Pos'].values})
+    
+    # map colors to our preds_df, fill nans with gray
+    preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
+
+    # sort by true values
+    return preds_df.sort_values('y_true', ascending=False).reset_index(drop=True)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
