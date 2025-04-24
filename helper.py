@@ -638,6 +638,18 @@ def run_bayes_opt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def get_2024_preds(df, model, pos):
+    """
+    Train model on all data prior to 2023 and use 2023 data to predict 2024 results.
+
+    Args:
+    - df (pd.DataFrame): DataFrame containing player data.
+    - model (sklearn estimator): The model to use for predictions.
+    - pos (str): The position group to filter by (e.g., 'QB', 'RB', 'WR/TE').
+
+    Returns:
+    - preds_df (pd.DataFrame): DataFrame containing predictions and true values for the specified position group.
+    """
+
     # get training data (before 2023) and test data (2023)
     X_train, y_train = get_X_y(df.query('Year < 2023'))
     X_test, y_test = get_X_y(df.query('Year == 2023'))
@@ -722,27 +734,39 @@ def plot_2024_preds(preds_df):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def get_2025_preds(df, model):
+    """
+    Train model on all data prior to 2024 and use 2024 data to predict 2025 results.
+
+    Args:
+    - df (pd.DataFrame): DataFrame containing player data.
+    - model (sklearn estimator): The model to use for predictions.
+
+    Returns:
+    - preds_df (pd.DataFrame): DataFrame containing 2025 predictions.
+    """
+
     # get all data
     X, y = get_X_y(df)
 
-    # train model
-    model.fit(X_train, y_train)
-
-    # make predictions
-    y_pred = model.predict(X_test)
-
-
+    # predict
+    y_pred = model.predict(X)
 
     # create a df for our predictions
-    preds_df = pd.DataFrame(data={'player': df.query('Year == 2023')['Player'].values, 'team': df.query('Year == 2023')['Tm'].values, 
-                              'y_true': y_test, 'y_pred': y_pred, 'error': (y_pred - y_test), 'pos': df.query('Year == 2023')['Pos'].values})
+    preds_df = pd.DataFrame(data={'player': df['Player'].values, 'team': df['Tm'].values, 'y_pred': y_pred, 'pos': df['Pos'].values})
+
+    # sort by prediction
+    preds_df = preds_df.sort_values('y_pred', ascending=False).reset_index(drop=True)
+
+    # add rank
+    preds_df['player_with_rank'] = [f'{name} ({i+1})' for i, name in enumerate(preds_df['player'])]
     
     # map colors to our preds_df, fill nans with gray
     preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
 
-    # sort by true values
-    return preds_df.sort_values('y_true', ascending=False).reset_index(drop=True)
+    return preds_df
 
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # injury.ipynb
