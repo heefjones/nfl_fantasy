@@ -473,6 +473,37 @@ def create_features(df):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def get_pos_subsets(features):
+    """
+    Create subsets of the features DataFrame for each position group (QB, RB, WR/TE).
+
+    Args:
+    - features (pd.DataFrame): The DataFrame containing player features.
+
+    Returns:
+    - qb (pd.DataFrame): Subset of features for quarterbacks.
+    - rb (pd.DataFrame): Subset of features for running backs.
+    - wr_te (pd.DataFrame): Subset of features for wide receivers and tight ends.
+    """
+
+    # create the 4 positional subsets
+    qb = features.query('Pos == "QB"')
+    rb = features.query('Pos == "RB"')
+    wr_te = features.query('Pos == "WR" or Pos == "TE"')
+
+    # drop 'Rec' cols for QBs
+    rec_cols = [col for col in features.columns if col.startswith('Rec_')]
+    qb = qb.drop(columns=rec_cols)
+
+    # drop 'Pass' cols for RBs and WRs/TEs
+    pass_cols = [col for col in features.columns if col.startswith('Pass_')]
+    rb = rb.drop(columns=pass_cols)
+    wr_te = wr_te.drop(columns=pass_cols)
+
+    return qb, rb, wr_te
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 def cross_val(df, target_col, estimator, folds=5):
     """
     Perform KFold cross validation on a given estimator and store evaluation metrics.
@@ -505,6 +536,28 @@ def cross_val(df, target_col, estimator, folds=5):
     # aggregate
     summary = scores.agg(['mean', 'std'])
     return summary
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def get_X_y(pos_subset):
+    """
+    Create X and y datasets for modeling.
+
+    Args:
+    - pos_subset (pd.DataFrame): The DataFrame containing player features for a specific position.
+
+    Returns:
+    - X (pd.DataFrame): Feature set.
+    - y (pd.Series): Target variable.
+    """
+
+    # non-feature cols
+    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'PPGTarget_half-ppr']
+
+    # define X and y
+    X = pos_subset.drop(non_feat_cols, axis=1)
+    y = pos_subset['PPGTarget_half-ppr']
+    return X, y
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -579,7 +632,92 @@ def run_bayes_opt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def get_2024_preds(df, model, pos):
+    # non-feature cols
+    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'PPGTarget_half-ppr']
 
+    # define training data (before 2023) and test data (2023)
+    X_train = df.query('Year < 2023').drop(columns=non_feat_cols)
+    y_train = df.query('Year < 2023')['PPGTarget_half-ppr']
+    X_test = df.query('Year == 2023').drop(columns=non_feat_cols)
+    y_test = df.query('Year == 2023')['PPGTarget_half-ppr']
+
+    # train model
+    model.fit(X_train, y_train)
+
+    # make predictions
+    y_pred = model.predict(X_test)
+
+    # evaluate model
+    rmse = root_mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    print(f'--- {pos} ---')
+    print(f'RMSE: {rmse:.4f}')
+    print(f'R2: {r2:.4f}')
+    print()
+
+    # create a df for our predictions
+    preds_df = pd.DataFrame(data={'player': df.query('Year == 2023')['Player'].values, 'team': df.query('Year == 2023')['Tm'].values, 
+                              'y_true': y_test, 'y_pred': y_pred, 'error': (y_pred - y_test), 'pos': df.query('Year == 2023')['Pos'].values})
+    
+    # map colors to our preds_df, fill nans with gray
+    preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
+
+    # sort by true values
+    return preds_df.sort_values('y_true', ascending=False).reset_index(drop=True)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def plot_2024_preds(preds_df):
+    """
+    Visualize the model's predictions against the true values.
+
+    Args:
+    - preds_df (pd.DataFrame): DataFrame containing the model's predictions and true values.
+
+    Returns:
+    - None
+    """
+
+    # create fig
+    plt.figure(figsize=(14, 8))
+
+    # title, labels
+    plt.title('2024 Fantasy PPG Predictions', fontsize=22)
+    plt.xlabel('True PPG', fontsize=22)
+    plt.ylabel('Predicted PPG', fontsize=22)
+
+    # define full palette
+    full_palette = {'QB': '#1f39a6', 'RB': '#B22222', 'WR': '#9B30FF', 'TE': '#708090'}
+
+    # filter palette to only positions present
+    unique_positions = preds_df['pos'].unique()
+    active_palette = {pos: full_palette[pos] for pos in unique_positions if pos in full_palette}
+
+    # scatter the points
+    sns.scatterplot(data=preds_df, x='y_true', y='y_pred', hue='pos', palette=active_palette, legend=True)
+
+    # perfect-prediction line
+    plt.plot([5, 30], [5, 30], color='black', linewidth=1)
+
+    # annotate player names
+    texts = []
+    for i, row in preds_df.iterrows():
+        texts.append(plt.text(row['y_true'], row['y_pred'], row['player'], fontsize=10, va='center', ha='center'))
+
+    # adjust the text positions to avoid overlaps
+    adjust_text(texts, x=preds_df['y_true'].values, y=preds_df['y_pred'].values, arrowprops=dict(arrowstyle='-', color='black', lw=0.2), min_arrow_len=0)
+
+    # set limits for x and y axes
+    xmin, xmax = preds_df['y_true'].min() - 2, preds_df['y_true'].max() + 2
+    ymin, ymax = preds_df['y_pred'].min() - 2, preds_df['y_pred'].max() + 2
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
+
+    # annotations for over and under-predictions
+    plt.text(xmin + 3, ymax - 3, 'Over-predictions', fontsize=20, weight='semibold', color='red')
+    plt.text(xmax - 5, ymin + 3, 'Under-predictions', fontsize=20, weight='semibold', color='red')
+    plt.show()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
