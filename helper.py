@@ -855,7 +855,7 @@ def get_2025_preds(df, model):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def plot_2025_preds(preds_df, xlabel, xmin=0, xmax=1):
+def plot_2025_preds(preds_df, pos, xlabel, xmin=0, xmax=1):
     """
     Visualize the model's 2025 predictions.
 
@@ -882,7 +882,7 @@ def plot_2025_preds(preds_df, xlabel, xmin=0, xmax=1):
     plt.figure(figsize=(14, 10))
     plt.hlines(y=preds_df['player'], xmin=xmin, xmax=preds_df['y_pred'], color=preds_df['team_color'], lw=linesize)
     plt.plot(preds_df['y_pred'], preds_df['player'], 'o', color='black', markersize=markersize)
-    plt.title('2025 Predictions with XGBoost (Non-Rookies)', fontsize=24)
+    plt.title(f'2025 Predictions: {pos}', fontsize=24)
     plt.xlabel(xlabel, fontsize=24)
     plt.xticks(fontsize=18)
     plt.xlim(xmin, xmax)
