@@ -362,7 +362,7 @@ def clean_pff_player_data(pff_data, prefix):
         cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'bats', 'big_time_throws', 'btt_rate', 'completion_percent', 
              'completions', 'declined_penalties', 'drop_rate', 'drops', 'grades_run', 'franchise_id', 
              'interceptions', 'penalties', 'pressure_to_sack_rate', 'qb_rating', 'sack_percent', 'scrambles', 'spikes', 'thrown_aways', 
-             'touchdowns', 'turnover_worthy_plays', 'twp_rate', 'yards', 'ypa', 'first_downs']
+             'touchdowns', 'turnover_worthy_plays', 'twp_rate', 'yards', 'ypa', 'first_downs', 'attempts']
     
     # rushing data
     elif prefix == 'Rush':
@@ -488,7 +488,7 @@ def drop_total_volume_cols(df):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def create_features(df, target_col):
+def create_features(df):
     """
     Create features for each player.
 
@@ -506,7 +506,7 @@ def create_features(df, target_col):
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'Age', 'Exp'] + [target_col]
+    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'Age', 'Exp', 'target']
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
     # list of expressions for original columns
@@ -561,7 +561,7 @@ def create_features(df, target_col):
     df_pandas = lazy_df.collect().to_pandas()
 
     # fill nulls and infs with 0
-    non_target_cols = [col for col in df_pandas.columns if col != target_col]
+    non_target_cols = [col for col in df_pandas.columns if col != 'target']
     df_pandas[non_target_cols] = df_pandas[non_target_cols].replace([np.inf, -np.inf], np.nan).fillna(0)
 
     # sort columns 
@@ -600,13 +600,12 @@ def get_pos_subsets(features):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def cross_val(df, target_col, estimator, folds=5):
+def cross_val(df, estimator, folds=5):
     """
     Perform KFold cross validation on a given estimator and store evaluation metrics.
     
     Args:
     - df (pd.DataFrame): Data to model.
-    - target_col (str): Name of the target column in the DataFrame.
     - estimator (sklearn estimator): Estimator to use for modeling.
     - folds (int): Number of cross-validation folds to use. Default is 5.
     
@@ -615,11 +614,11 @@ def cross_val(df, target_col, estimator, folds=5):
     """
 
     # non-feature cols
-    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year'] + [target_col]
+    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'target']
 
     # define X and y
     X = df.drop(non_feat_cols, axis=1)
-    y = df[target_col]
+    y = df['target']
 
     # cross_validate
     cv = KFold(n_splits=folds, shuffle=True, random_state=SEED)
@@ -648,11 +647,11 @@ def get_X_y(pos_subset):
     """
 
     # non-feature cols
-    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'PPGTarget_half-ppr']
+    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'target']
 
     # define X and y
     X = pos_subset.drop(non_feat_cols, axis=1)
-    y = pos_subset['PPGTarget_half-ppr']
+    y = pos_subset['target']
     return X, y
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -728,14 +727,13 @@ def run_bayes_opt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def get_2024_preds(df, model, pos):
+def get_2024_preds(df, model):
     """
     Train model on all data prior to 2023 and use 2023 data to predict 2024 results.
 
     Args:
     - df (pd.DataFrame): DataFrame containing player data.
     - model (sklearn estimator): The model to use for predictions.
-    - pos (str): The position group to filter by (e.g., 'QB', 'RB', 'WR/TE').
 
     Returns:
     - preds_df (pd.DataFrame): DataFrame containing predictions and true values for the specified position group.
@@ -754,7 +752,6 @@ def get_2024_preds(df, model, pos):
     # evaluate model
     rmse = root_mean_squared_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
-    print(f'--- {pos} ---')
     print(f'RMSE: {rmse:.4f}')
     print(f'R2: {r2:.4f}')
     print()
@@ -906,7 +903,65 @@ def plot_2025_preds(preds_df, xmin=0, xmax=25):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def create_injury_features(df):
+    """
+    Create features for each player.
 
+    Args:
+    - df (pd.dataframe): Player data.
+
+    Returns:
+    - (pl.dataframe): Dataframe with new features added.
+    """
+
+    # convert to polars dataframe and sort
+    df = pl.from_pandas(df).sort(["Key", "Year"])
+
+    # convert to a lazy frame for efficiency
+    lazy_df = df.lazy()
+
+    # define cols to aggregate
+    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'Age', 'Exp', 'target']
+    agg_cols = [col for col in df.columns if col not in non_agg_cols]
+
+    # list of expressions for original columns
+    base_exprs = [pl.col('*')]
+
+    # expressions that rely on prior aliases
+    post_exprs = []
+
+    # iterate through each column to be aggregated
+    for col in agg_cols:
+        # rolling stats (n years)
+        for n in [2, 3]:
+            base_exprs.extend([
+                pl.col(col)
+                .rolling_mean(window_size=n, min_samples=1)
+                .over('Key')
+                .alias(f'{col}_{n}y_mean'),
+                pl.col(col)
+                .rolling_std(window_size=n, min_samples=1)
+                .over('Key')
+                .alias(f'{col}_{n}y_std')])
+
+        # cumulative career mean
+        cum_sum = pl.col(col).cum_sum().over('Key')
+        cum_count = (pl.col('Exp') + 1)
+        cum_mean = (cum_sum / cum_count).alias(f'{col}_career_mean')
+        base_exprs.extend([cum_mean])
+
+    # add the new columns to df
+    lazy_df = lazy_df.with_columns(base_exprs)
+
+    # collect results back into a pandas df
+    df_pandas = lazy_df.collect().to_pandas()
+
+    # fill nulls and infs with 0
+    non_target_cols = [col for col in df_pandas.columns if col != 'target']
+    df_pandas[non_target_cols] = df_pandas[non_target_cols].replace([np.inf, -np.inf], np.nan).fillna(0)
+
+    # sort columns 
+    return df_pandas[sorted(df_pandas.columns)]
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
