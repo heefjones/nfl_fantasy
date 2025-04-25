@@ -763,7 +763,7 @@ def get_2024_preds(df, model):
     # map colors to our preds_df, fill nans with gray
     preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
 
-    # sort by true values
+    # sort by true ppg values
     return preds_df.sort_values('y_true', ascending=False).reset_index(drop=True)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -846,7 +846,7 @@ def get_2025_preds(df, model):
     preds_df = preds_df.sort_values('y_pred', ascending=False).reset_index(drop=True)
 
     # add rank
-    preds_df['player_with_rank'] = [f'{name} ({i+1})' for i, name in enumerate(preds_df['player'])]
+    preds_df['rank'] = [(i+1) for i in range(preds_df.shape[0])]
     
     # map colors to our preds_df, fill nans with gray
     preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
@@ -855,7 +855,7 @@ def get_2025_preds(df, model):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def plot_2025_preds(preds_df, xmin=0, xmax=25):
+def plot_2025_preds(preds_df, xlabel, xmin=0, xmax=1):
     """
     Visualize the model's 2025 predictions.
 
@@ -880,18 +880,21 @@ def plot_2025_preds(preds_df, xmin=0, xmax=25):
 
     # plot
     plt.figure(figsize=(14, 10))
-    plt.hlines(y=preds_df['player_with_rank'], xmin=xmin, xmax=preds_df['y_pred'], color=preds_df['team_color'], lw=linesize)
-    plt.plot(preds_df['y_pred'], preds_df['player_with_rank'], 'o', color='black', markersize=markersize)
+    plt.hlines(y=preds_df['player'], xmin=xmin, xmax=preds_df['y_pred'], color=preds_df['team_color'], lw=linesize)
+    plt.plot(preds_df['y_pred'], preds_df['player'], 'o', color='black', markersize=markersize)
     plt.title('2025 Predictions with XGBoost (Non-Rookies)', fontsize=24)
-    plt.xlabel('Predicted Fantasy PPG', fontsize=24)
+    plt.xlabel(xlabel, fontsize=24)
     plt.xticks(fontsize=18)
-    plt.yticks(fontsize=markersize)
     plt.xlim(xmin, xmax)
     plt.margins(x=0, y=0.04)
 
+    # add rank to y-tick labels
+    ytick_labels = [f'{name} ({int(rank)})' for name, rank in zip(preds_df['player'], preds_df['rank'])]
+    plt.yticks(ticks=range(num_players), labels=ytick_labels, fontsize=markersize)
+
     # annotate
     for i, row in preds_df.iterrows():
-        plt.text(row['y_pred'] + 0.3, row['player_with_rank'], f'{row["y_pred"]:.1f}', va='center', fontsize=markersize)
+        plt.text(row['y_pred'] + 0.3, row['player'], f'{row["y_pred"]:.2f}', va='center', fontsize=markersize)
     plt.tight_layout()
     plt.show()
 
