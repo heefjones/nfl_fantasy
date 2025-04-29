@@ -455,7 +455,7 @@ def consolidate_pos_columns(df, col_name):
     # map positional conditions to the correct column 
     conditions = [df['Pos'] == 'QB', df['Pos'] == 'RB', df['Pos'].isin(['WR', 'TE'])]
     choices = [df[pass_col], df[rush_col], df[rec_col]]
-    df['grades_offense'] = np.select(conditions, choices, default=np.nan)
+    df[col_name] = np.select(conditions, choices, default=np.nan)
 
     # drop the original columns
     return df.drop([pass_col, rush_col, rec_col], axis=1)
