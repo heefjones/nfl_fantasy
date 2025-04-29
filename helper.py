@@ -968,6 +968,45 @@ def create_injury_features(df):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def plot_adj_preds(preds_df, pos):
+    """
+    Visualize the model's predictions against the true values.
 
+    Args:
+    - preds_df (pd.DataFrame): DataFrame containing ppg and games_played_pct predictions.
+
+    Returns:
+    - None
+    """
+
+    # map colors to our preds_df, fill nans with gray
+    preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
+
+    # create fig
+    plt.figure(figsize=(14, 8))
+
+    # title, labels
+    plt.title(f'2025 Predictions: Top {preds_df.shape[0]} {pos}s', fontsize=22)
+    plt.xlabel('PPG', fontsize=22)
+    plt.ylabel('Games Played %', fontsize=22)
+
+    # scatter the points
+    
+    plt.scatter(
+        preds_df['ppg_pred'],
+        preds_df['games_played_pct_pred'],
+        color=preds_df['team_color'],
+        s=30
+    )
+
+    # annotate player names
+    texts = []
+    for i, row in preds_df.iterrows():
+        texts.append(plt.text(row['ppg_pred'], row['games_played_pct_pred'], row['player'], fontsize=10, va='center', ha='center'))
+
+    # adjust the text positions to avoid overlaps
+    adjust_text(texts, force_points=0.5, arrowprops=dict(arrowstyle='-', color='black', lw=0.2))
+
+    plt.show()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
