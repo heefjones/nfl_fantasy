@@ -402,7 +402,7 @@ def clean_pff_player_data(pff_data, prefix):
     # add prefix
     pff_data = prefix_df(pff_data, prefix)
 
-    return pff_data
+    return pff_data.fillna(0)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -435,7 +435,7 @@ def clean_pff_team_data(pff_data):
     pff_data['Year'] = pff_data['Team_Year']
 
     # drop columns
-    return pff_data.drop(columns=['Team_Tm', 'Team_Year', 'Team_Points For', 'Team_Points Against', 'Team_Wins', 'Team_Losses'])
+    return pff_data.drop(columns=['Team_Tm', 'Team_Year', 'Team_Points For', 'Team_Points Against', 'Team_Wins', 'Team_Losses']).fillna(0)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
