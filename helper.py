@@ -124,6 +124,9 @@ def show_shape_and_nulls(df):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def fill_experience(group):
+    # add 'Key' back manually
+    group['Key'] = group.name
+
     # get first experience value for a player
     first_exp = group['Exp'].iloc[0]
     
@@ -399,7 +402,7 @@ def clean_pff_player_data(pff_data, prefix):
     # add prefix
     pff_data = prefix_df(pff_data, prefix)
 
-    return pff_data.fillna(0)
+    return pff_data
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -432,7 +435,7 @@ def clean_pff_team_data(pff_data):
     pff_data['Year'] = pff_data['Team_Year']
 
     # drop columns
-    return pff_data.drop(columns=['Team_Tm', 'Team_Year', 'Team_Points For', 'Team_Points Against', 'Team_Wins', 'Team_Losses']).fillna(0)
+    return pff_data.drop(columns=['Team_Tm', 'Team_Year', 'Team_Points For', 'Team_Points Against', 'Team_Wins', 'Team_Losses'])
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
