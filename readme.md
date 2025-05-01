@@ -30,12 +30,11 @@ I've posted the [Pro Football Reference](https://www.pro-football-reference.com)
 - **Validation RMSE:** QB=5.39, RB=3.29, WR/TE=2.52
 
 # 2025 Rankings
-
 Finally, the model was trained on all data (2006-2023), using the 2024 data to predict 2025 fantasy PPG: [i will put rankings here later]
 
 # Files
 - eda.ipynb - Data cleaning, EDA, and feature engineering.
-- ppg.ipynb - Predict fantasy PPG for the 2025 season.
+- ppg.ipynb - Predict fantasy PPG for 2025.
 - rankings.ipynb - Final fantasy rankings for 2025.
 - helper.py - Functions for data processing, visualization, and model training.
 
