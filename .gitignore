@@ -2,8 +2,8 @@
 data/
 
 # extra notebooks
-ppg_preds_all_data.ipynb
-injury_preds.ipynb
+ppg_all_data.ipynb
+games_played.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
