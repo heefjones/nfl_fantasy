@@ -10,10 +10,6 @@ In this notebook, we only use each player's efficieny (per-game and per-touch st
 Here, we only use volume data (total touches and games played) to predict each player's volume (Games played) in the next season.
 
 
-
-# Goal
-The goal of this project is to create a predictive model that takes in a QB's past statistics to predict their __PFF offensive grade__ in the next season. 
-
 # Data
 - **Source:** [Pro Football Reference](https://www.pro-football-reference.com)
 - **Records:**
@@ -56,21 +52,13 @@ Finally, the model was trained on all data (2006-2023), using the 2024 data to p
 # Files
 
 - eda.ipynb - Data cleaning, EDA, and feature engineering.
-- xgboost.ipynb - Bayesian optimize XGBoost model and predict on both 2024 and 2025 seasons.
-- rnn.ipynb - Train and validate a RNN.
-- helper.py - Custom functions for data processing, visualization, and model training.
-- presentation.pdf - Slide deck for the original 2023 presentation.
+- ppg_preds.ipynb - Predict fantasy PPG in the 2025 season.
+- helper.py - Functions for data processing, visualization, and model training.
 
 # Repository Structure
 ```
 ├── eda.ipynb
-├── xgboost.ipynb
-├── rnn.ipynb
+├── ppg_preds.ipynb
 ├── helper.py
 ├── README.md
-├── presentation.pdf
-└── images/
-    ├── slide_1.PNG
-    ├── xgboost_2024_preds.PNG
-    └── xgboost_2025_preds.PNG
 ```
