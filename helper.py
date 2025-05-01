@@ -1019,3 +1019,41 @@ def plot_adj_preds(preds_df, pos):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def show_top_players(df, pos, num_players):
+    """
+    Show the top players for a given position based on the predictions.
+    """
+
+    # filter the predictions for the specified position
+    pos_preds = df.query('pos == @pos').copy()[['player', 'adp_rank_2025', 'pred_rank_2025', 'rank_diff', 'ppg_pred']]
+    
+    # sort by predicted points and select the top players
+    top_players = pos_preds.sort_values(by='adp_rank_2025', ascending=True).reset_index(drop=True)
+
+    return top_players.head(num_players).T
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def clean_rankings(rankings):
+    # combine firstName and lastName
+    rankings['player'] = rankings['firstName'] + ' ' + rankings['lastName']
+
+    # drop cols
+    rankings = rankings.drop(columns=['id', 'firstName', 'lastName', 'teamName', 'slotName', 'lineupStatus'])
+
+    # remove first 2 chars from positionRank col
+    rankings['positionRank'] = rankings['positionRank'].str[2:]
+
+    # rename positionRank to adp_rank_2025
+    rankings = rankings.rename(columns={'positionRank': 'adp_rank_2025'})
+
+    # drop players with null adp_rank_2025
+    rankings = rankings[rankings['adp_rank_2025'].notnull()]
+
+    # cast adp_rank_2025 to int
+    rankings['adp_rank_2025'] = rankings['adp_rank_2025'].astype(int)
+
+    # remove "." and " Jr" from player col
+    rankings['player'] = rankings['player'].str.replace('.', '', regex=False).str.replace(' Jr', '', regex=False)
+
+    return rankings
