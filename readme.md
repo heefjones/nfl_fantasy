@@ -23,11 +23,14 @@ I've posted the [Pro Football Reference](https://www.pro-football-reference.com)
 3 separate models were trained: QB, RB, WR/TE. Each positional subset model was trained on the 2006–2022 data, using the 2023 data as a holdout test set to predict 2024 fantasy PPG.
 
 - **Model:** XGBoost
-- **Input:** Per-game and percentage features were reaturized: Last season + 3-year & career summary stats + trend slope + momentum
+- **Input:** Last season + 3-year & career summary stats + trend slope + momentum
 - **Target:** Next season fantasy points per game
-- **Tuning:** Bayesian optimization  
-- **Validation:** 5‑fold K‑Fold  
-- **Validation RMSE:** QB=5.39, RB=3.29, WR/TE=2.52
+- **Tuning:** Bayesian optimization
+- **Validation:** 5‑fold K‑Fold
+- **RMSE:**
+  - **QB**: 5.39
+  - **RB**: 3.29
+  - **WR/TE**: 2.52
 
 # 2025 Rankings
 Finally, the model was trained on all data (2006-2023), using the 2024 data to predict 2025 fantasy PPG: [i will put rankings here later]
