@@ -1,6 +1,10 @@
 # Data directories to ignore
 data/
 
+# extra notebooks
+ppg_preds_all_data.ipynb
+injury_preds.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
