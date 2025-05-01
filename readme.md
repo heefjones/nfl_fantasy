@@ -2,16 +2,16 @@
 Player ADPs are generally accurate, but the few outliers are what win and lose leagues. Allowing players to fall to you in the draft should increase your odds, but you still need to hit on those players. Winning your fantasy league comes down to predicting the players who outperform their ADP the most.
 
 # Data
-I've posted the [Pro Football Reference](https://www.pro-football-reference.com) data (1970-2024) [here](https://www.kaggle.com/datasets/heefjones/nfl-fantasy-data-1970-2024). Feel free to download and use for projections.
+I've posted the Pro Football Reference data [here](https://www.kaggle.com/datasets/heefjones/nfl-fantasy-data-1970-2024). Feel free to download and use for projections.
 
-## Pro Football Reference
+## [Pro Football Reference](https://www.pro-football-reference.com)
 - **Records:**
   - 55 seasons (1970–2024)
   - 30k rows
 - **Features:**
   - Yards, TDs, attempts (passing, rushing, receiving)
 
- ## Pro Football Focus
+ ## [Pro Football Focus](https://www.pff.com)
 - **Records:**
   - 19 seasons (2006–2024)
   - 12k rows
@@ -20,7 +20,7 @@ I've posted the [Pro Football Reference](https://www.pro-football-reference.com)
   - Advanced passing, rushing, and receiving metrics
 
 # Modeling
-3 separate models were trained: QB, RB, WR/TE. Each positional subset model was trained on the 2006–2022 data, using the 2023 data as a holdout test set to predict 2024 fantasy PPG.
+3 position-specific XGBoost models (QB, RB, WR/TE) were trained on the 2006–2022 data, using the 2023 data as a holdout test set to predict 2024 fantasy PPG.
 
 - **Model:** XGBoost
 - **Input:** Last season + 3-year & career summary stats + trend slope + momentum
