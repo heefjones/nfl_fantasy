@@ -7,17 +7,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from adjustText import adjust_text
 
-# system
-import os
-import gc
-
 # machine learning
 from tqdm import tqdm
 from sklearn.model_selection import cross_validate, KFold, cross_val_score
 from sklearn.metrics import r2_score, root_mean_squared_error
-from sklearn.linear_model import LinearRegression
 from xgboost import XGBRegressor
 from bayes_opt import BayesianOptimization
+
+# system
+import os
+import gc
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -1019,18 +1018,17 @@ def plot_adj_preds(preds_df, pos):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def show_top_players(df, pos, num_players):
-    """
-    Show the top players for a given position based on the predictions.
-    """
+def clean_preds(preds):
+    # remove "." and " Jr" from player col
+    preds['player'] = preds['player'].str.replace('.', '', regex=False).str.replace(' Jr', '', regex=False)
 
-    # filter the predictions for the specified position
-    pos_preds = df.query('pos == @pos').copy()[['player', 'adp_rank_2025', 'pred_rank_2025', 'rank_diff', 'ppg_pred']]
-    
-    # sort by predicted points and select the top players
-    top_players = pos_preds.sort_values(by='adp_rank_2025', ascending=True).reset_index(drop=True)
+    # rename some players to match rankings
+    preds.loc[preds['player'] == 'Marquise Brown', 'player'] = 'Hollywood Brown'
+    preds.loc[preds['player'] == 'Josh Palmer', 'player'] = 'Joshua Palmer'
+    preds.loc[preds['player'] == 'Demario Douglas', 'player'] = 'DeMario Douglas'
+    preds.loc[preds['player'] == 'Chigoziem Okonkwo', 'player'] = 'Chig Okonkwo'
 
-    return top_players.head(num_players).T
+    return preds[['player', 'pos', 'ppg_pred', 'pred_rank_2025', 'ppg_rank_2024', 'pff_grade_2024']]
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -1056,4 +1054,47 @@ def clean_rankings(rankings):
     # remove "." and " Jr" from player col
     rankings['player'] = rankings['player'].str.replace('.', '', regex=False).str.replace(' Jr', '', regex=False)
 
-    return rankings
+    return rankings.sort_values(by='adp_rank_2025', ascending=True).reset_index(drop=True)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def compute_rank_diff(df):
+    # make a copy and reset index
+    df = df.copy().reset_index(drop=True)
+
+    # ensure adp ranks are unique by adding a small offset per duplicate
+    df['adp_rank_2025'] = df['adp_rank_2025'] + df.groupby('adp_rank_2025').cumcount()
+
+    # compute expected rank based on order
+    df['expected_rank'] = df.index + 1
+
+    # calculate how many ranks were skipped at each adp position
+    df['skipped_ranks_cumulative'] = df['adp_rank_2025'] - df['expected_rank']
+
+    # build a mapping of skipped ranks by adp
+    skip_map = df.set_index('adp_rank_2025')['skipped_ranks_cumulative']
+    max_skip = df['skipped_ranks_cumulative'].max()
+
+    # apply skipped ranks to predicted rank positions
+    df['skips_at_pred'] = df['pred_rank_2025'].map(skip_map).fillna(max_skip)
+
+    # compute adjusted rank difference
+    df['rank_diff'] = df['adp_rank_2025'] - (df['pred_rank_2025'] + df['skips_at_pred'])
+
+    # drop intermediate column
+    return df.drop(columns=['skips_at_pred'])
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def show_top_players(df, pos, num_players):
+    """
+    Show the top players for a given position based on the predictions.
+    """
+
+    # filter the predictions for the specified position
+    pos_preds = df.query('pos == @pos').copy()[['player', 'adp_rank_2025', 'pred_rank_2025', 'rank_diff', 'ppg_pred']].reset_index(drop=True)
+
+    return pos_preds.head(num_players).T
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
