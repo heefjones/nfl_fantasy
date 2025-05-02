@@ -1088,7 +1088,7 @@ def show_top_players(df, pos, num_players):
     """
 
     # filter the predictions for the specified position
-    pos_preds = df.query('pos == @pos').copy()[['player', 'adp_rank_2025', 'pred_rank_2025', 'rank_diff', 'ppg_pred']].reset_index(drop=True)
+    pos_preds = df.query('pos == @pos').copy()[['player', 'adp_rank_2025', 'pred_rank_2025', 'rank_diff', 'rank_diff/adp_rank', 'ppg_pred']].sort_values('rank_diff/adp_rank', ascending=False).reset_index(drop=True)
 
     return pos_preds.head(num_players).T
 
