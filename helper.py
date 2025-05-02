@@ -1063,26 +1063,22 @@ def compute_rank_diff(df):
     df = df.copy().reset_index(drop=True)
 
     # ensure adp ranks are unique by adding a small offset per duplicate
-    df['adp_rank_2025'] = df['adp_rank_2025'] + df.groupby('adp_rank_2025').cumcount()
+    df['adp_rank_2025_no_ties'] = df['adp_rank_2025'] + df.groupby('adp_rank_2025').cumcount()
 
     # compute expected rank based on order
     df['expected_rank'] = df.index + 1
 
     # calculate how many ranks were skipped at each adp position
-    df['skipped_ranks_cumulative'] = df['adp_rank_2025'] - df['expected_rank']
-
-    # build a mapping of skipped ranks by adp
-    skip_map = df.set_index('adp_rank_2025')['skipped_ranks_cumulative']
-    max_skip = df['skipped_ranks_cumulative'].max()
-
-    # apply skipped ranks to predicted rank positions
-    df['skips_at_pred'] = df['pred_rank_2025'].map(skip_map).fillna(max_skip)
+    df['skipped_ranks_cumulative'] = df['adp_rank_2025_no_ties'] - df['expected_rank']
 
     # compute adjusted rank difference
-    df['rank_diff'] = df['adp_rank_2025'] - (df['pred_rank_2025'] + df['skips_at_pred'])
+    df['rank_diff'] = df['adp_rank_2025_no_ties'] - (df['pred_rank_2025'] + df['skipped_ranks_cumulative'])
 
-    # drop intermediate column
-    return df.drop(columns=['skips_at_pred'])
+    # drop old cols
+    df = df.drop(columns=['adp_rank_2025', 'expected_rank', 'skipped_ranks_cumulative'])
+
+    # rename adp_rank col
+    return df.rename(columns={'adp_rank_2025_no_ties': 'adp_rank_2025'})
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
