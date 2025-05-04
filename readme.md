@@ -1,5 +1,5 @@
 # Data
-I've posted a full clean NFL dataset (1970-2024) [here](https://www.kaggle.com/datasets/heefjones/nfl-fantasy-data-1970-2024). Feel free to download and use for projections.
+I've posted a clean NFL fantasy dataset [here](https://www.kaggle.com/datasets/heefjones/nfl-fantasy-data-1970-2024). Feel free to download and use for projections.
 
 ## [Pro Football Reference](https://www.pro-football-reference.com)
 - **Records:**
