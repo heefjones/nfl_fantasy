@@ -45,7 +45,7 @@ np.random.seed(SEED)
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-# eda.ipynb
+# preprocessing.ipynb
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -1037,7 +1037,7 @@ def clean_rankings(rankings):
     rankings['player'] = rankings['firstName'] + ' ' + rankings['lastName']
 
     # drop cols
-    rankings = rankings.drop(columns=['id', 'firstName', 'lastName', 'teamName', 'slotName', 'lineupStatus'])
+    rankings = rankings.drop(columns=['id', 'firstName', 'lastName', 'slotName', 'lineupStatus'])
 
     # remove first 2 chars from positionRank col
     rankings['positionRank'] = rankings['positionRank'].str[2:]
@@ -1071,6 +1071,9 @@ def compute_rank_diff(df):
     # calculate how many ranks were skipped at each adp position
     df['skipped_ranks_cumulative'] = df['adp_rank_2025_no_ties'] - df['expected_rank']
 
+    # add cumulative ranks skipped to pred_rank
+    df['pred_rank_2025'] = df['pred_rank_2025']
+
     # compute adjusted rank difference
     df['rank_diff'] = df['adp_rank_2025_no_ties'] - (df['pred_rank_2025'] + df['skipped_ranks_cumulative'])
 
@@ -1088,7 +1091,7 @@ def show_top_players(df, pos, num_players):
     """
 
     # filter the predictions for the specified position
-    pos_preds = df.query('pos == @pos').copy()[['player', 'adp_rank_2025', 'pred_rank_2025', 'rank_diff', 'rank_diff/adp_rank', 'ppg_pred']].sort_values('rank_diff/adp_rank', ascending=False).reset_index(drop=True)
+    pos_preds = df.query('pos == @pos').copy()[['player', 'teamName', 'adp_rank_2025', 'pred_rank_2025', 'rank_diff', 'rank_diff/adp_rank', 'ppg_pred']]#.sort_values('rank_diff', ascending=False).reset_index(drop=True)
 
     return pos_preds.head(num_players).T
 
