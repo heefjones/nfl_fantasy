@@ -1,0 +1,3155 @@
+{
+  "QB": [
+    {
+      "rank": 1.0,
+      "player": "Lamar Jackson",
+      "ppg": 20.971642
+    },
+    {
+      "rank": 2.0,
+      "player": "Josh Allen",
+      "ppg": 18.648424
+    },
+    {
+      "rank": 3.0,
+      "player": "Patrick Mahomes",
+      "ppg": 18.13083
+    },
+    {
+      "rank": 4.0,
+      "player": "Kyler Murray",
+      "ppg": 17.686892
+    },
+    {
+      "rank": 5.0,
+      "player": "Jalen Hurts",
+      "ppg": 17.548178
+    },
+    {
+      "rank": 6.0,
+      "player": "Bo Nix",
+      "ppg": 17.433376
+    },
+    {
+      "rank": 7.0,
+      "player": "Jayden Daniels",
+      "ppg": 17.145458
+    },
+    {
+      "rank": 8.0,
+      "player": "Joe Burrow",
+      "ppg": 16.511486
+    },
+    {
+      "rank": 9.0,
+      "player": "Jared Goff",
+      "ppg": 16.489944
+    },
+    {
+      "rank": 10.0,
+      "player": "Justin Herbert",
+      "ppg": 16.309322
+    },
+    {
+      "rank": 11.0,
+      "player": "Baker Mayfield",
+      "ppg": 16.157238
+    },
+    {
+      "rank": 12.0,
+      "player": "Tua Tagovailoa",
+      "ppg": 15.394548
+    },
+    {
+      "rank": 13.0,
+      "player": "Kirk Cousins",
+      "ppg": 14.991928
+    },
+    {
+      "rank": 14.0,
+      "player": "Matthew Stafford",
+      "ppg": 14.682054
+    },
+    {
+      "rank": 15.0,
+      "player": "Russell Wilson",
+      "ppg": 14.439679
+    },
+    {
+      "rank": 16.0,
+      "player": "Geno Smith",
+      "ppg": 14.329371
+    },
+    {
+      "rank": 17.0,
+      "player": "Brock Purdy",
+      "ppg": 14.31722
+    },
+    {
+      "rank": 18.0,
+      "player": "Sam Darnold",
+      "ppg": 14.191064
+    },
+    {
+      "rank": 19.0,
+      "player": "Caleb Williams",
+      "ppg": 14.12396
+    },
+    {
+      "rank": 20.0,
+      "player": "Dak Prescott",
+      "ppg": 14.078869
+    },
+    {
+      "rank": 21.0,
+      "player": "Drake Maye",
+      "ppg": 13.344249
+    },
+    {
+      "rank": 22.0,
+      "player": "C.J. Stroud",
+      "ppg": 13.177473
+    },
+    {
+      "rank": 23.0,
+      "player": "Derek Carr",
+      "ppg": 13.124017
+    },
+    {
+      "rank": 24.0,
+      "player": "Jimmy Garoppolo",
+      "ppg": 12.994581
+    },
+    {
+      "rank": 25.0,
+      "player": "Trevor Lawrence",
+      "ppg": 12.766508
+    },
+    {
+      "rank": 26.0,
+      "player": "Jordan Love",
+      "ppg": 12.562955
+    },
+    {
+      "rank": 27.0,
+      "player": "Justin Fields",
+      "ppg": 12.525399
+    },
+    {
+      "rank": 28.0,
+      "player": "Daniel Jones",
+      "ppg": 11.993955
+    },
+    {
+      "rank": 29.0,
+      "player": "Aaron Rodgers",
+      "ppg": 11.369932
+    },
+    {
+      "rank": 30.0,
+      "player": "Marcus Mariota",
+      "ppg": 10.985757
+    },
+    {
+      "rank": 31.0,
+      "player": "Bryce Young",
+      "ppg": 10.822092
+    },
+    {
+      "rank": 32.0,
+      "player": "Joe Milton",
+      "ppg": 10.369046
+    },
+    {
+      "rank": 33.0,
+      "player": "Deshaun Watson",
+      "ppg": 10.239565
+    },
+    {
+      "rank": 34.0,
+      "player": "Joe Flacco",
+      "ppg": 9.701075
+    },
+    {
+      "rank": 35.0,
+      "player": "Anthony Richardson",
+      "ppg": 9.521683
+    },
+    {
+      "rank": 36.0,
+      "player": "Spencer Rattler",
+      "ppg": 8.95455
+    },
+    {
+      "rank": 37.0,
+      "player": "Tanner McKee",
+      "ppg": 8.564262
+    },
+    {
+      "rank": 38.0,
+      "player": "Jameis Winston",
+      "ppg": 8.445257
+    },
+    {
+      "rank": 39.0,
+      "player": "Joshua Dobbs",
+      "ppg": 8.2275505
+    },
+    {
+      "rank": 40.0,
+      "player": "Mason Rudolph",
+      "ppg": 8.050685
+    },
+    {
+      "rank": 41.0,
+      "player": "Tyler Huntley",
+      "ppg": 7.480168
+    },
+    {
+      "rank": 42.0,
+      "player": "Andy Dalton",
+      "ppg": 7.049139
+    },
+    {
+      "rank": 43.0,
+      "player": "Mac Jones",
+      "ppg": 6.931176
+    },
+    {
+      "rank": 44.0,
+      "player": "Will Levis",
+      "ppg": 6.866893
+    },
+    {
+      "rank": 45.0,
+      "player": "Tyrod Taylor",
+      "ppg": 6.5523405
+    },
+    {
+      "rank": 46.0,
+      "player": "Tyson Bagent",
+      "ppg": 6.2114606
+    },
+    {
+      "rank": 47.0,
+      "player": "Dorian Thompson-Robinson",
+      "ppg": 6.0220275
+    },
+    {
+      "rank": 48.0,
+      "player": "Gardner Minshew II",
+      "ppg": 5.951866
+    },
+    {
+      "rank": 49.0,
+      "player": "Drew Lock",
+      "ppg": 5.9282002
+    },
+    {
+      "rank": 50.0,
+      "player": "Carson Wentz",
+      "ppg": 5.749403
+    },
+    {
+      "rank": 51.0,
+      "player": "Aidan O'Connell",
+      "ppg": 5.614753
+    },
+    {
+      "rank": 52.0,
+      "player": "Nick Mullens",
+      "ppg": 5.436903
+    },
+    {
+      "rank": 53.0,
+      "player": "Jacoby Brissett",
+      "ppg": 5.243298
+    },
+    {
+      "rank": 54.0,
+      "player": "Taylor Heinicke",
+      "ppg": 5.1547875
+    },
+    {
+      "rank": 55.0,
+      "player": "Clayton Tune",
+      "ppg": 4.723907
+    },
+    {
+      "rank": 56.0,
+      "player": "Jarrett Stidham",
+      "ppg": 4.673224
+    },
+    {
+      "rank": 57.0,
+      "player": "Trey Lance",
+      "ppg": 4.586869
+    },
+    {
+      "rank": 58.0,
+      "player": "Bailey Zappe",
+      "ppg": 4.503885
+    },
+    {
+      "rank": 59.0,
+      "player": "Kenny Pickett",
+      "ppg": 4.4541106
+    },
+    {
+      "rank": 60.0,
+      "player": "Jake Browning",
+      "ppg": 4.3777947
+    },
+    {
+      "rank": 61.0,
+      "player": "Brandon Allen",
+      "ppg": 4.2086954
+    },
+    {
+      "rank": 62.0,
+      "player": "Michael Penix",
+      "ppg": 4.1919723
+    },
+    {
+      "rank": 63.0,
+      "player": "Malik Willis",
+      "ppg": 4.0771537
+    },
+    {
+      "rank": 64.0,
+      "player": "Chris Oladokun",
+      "ppg": 4.022911
+    },
+    {
+      "rank": 65.0,
+      "player": "Jeff Driskel",
+      "ppg": 3.9520059
+    },
+    {
+      "rank": 66.0,
+      "player": "Mitchell Trubisky",
+      "ppg": 3.8667521
+    },
+    {
+      "rank": 67.0,
+      "player": "Tim Boyle",
+      "ppg": 3.7642083
+    },
+    {
+      "rank": 68.0,
+      "player": "Tommy DeVito",
+      "ppg": 3.7288527
+    },
+    {
+      "rank": 69.0,
+      "player": "Hendon Hooker",
+      "ppg": 3.621707
+    },
+    {
+      "rank": 70.0,
+      "player": "Desmond Ridder",
+      "ppg": 3.4722536
+    },
+    {
+      "rank": 71.0,
+      "player": "Jake Haener",
+      "ppg": 3.31299
+    },
+    {
+      "rank": 72.0,
+      "player": "Sam Howell",
+      "ppg": 3.2444227
+    },
+    {
+      "rank": 73.0,
+      "player": "Cooper Rush",
+      "ppg": 3.1087954
+    },
+    {
+      "rank": 74.0,
+      "player": "Skylar Thompson",
+      "ppg": 3.1081448
+    },
+    {
+      "rank": 75.0,
+      "player": "Davis Mills",
+      "ppg": 3.0705953
+    },
+    {
+      "rank": 76.0,
+      "player": "Kyle Allen",
+      "ppg": 3.0097747
+    },
+    {
+      "rank": 77.0,
+      "player": "Josh Johnson",
+      "ppg": 2.553525
+    },
+    {
+      "rank": 78.0,
+      "player": "Mike White",
+      "ppg": 1.9153631
+    },
+    {
+      "rank": 79.0,
+      "player": "Kyle Trask",
+      "ppg": 1.880266
+    }
+  ],
+  "RB": [
+    {
+      "rank": 1.0,
+      "player": "Bijan Robinson",
+      "ppg": 15.391518
+    },
+    {
+      "rank": 2.0,
+      "player": "De'Von Achane",
+      "ppg": 14.609208
+    },
+    {
+      "rank": 3.0,
+      "player": "Jahmyr Gibbs",
+      "ppg": 14.541001
+    },
+    {
+      "rank": 4.0,
+      "player": "Bucky Irving",
+      "ppg": 14.438104
+    },
+    {
+      "rank": 5.0,
+      "player": "Derrick Henry",
+      "ppg": 14.124535
+    },
+    {
+      "rank": 6.0,
+      "player": "Saquon Barkley",
+      "ppg": 13.873262
+    },
+    {
+      "rank": 7.0,
+      "player": "Josh Jacobs",
+      "ppg": 13.680642
+    },
+    {
+      "rank": 8.0,
+      "player": "Alvin Kamara",
+      "ppg": 13.23697
+    },
+    {
+      "rank": 9.0,
+      "player": "Breece Hall",
+      "ppg": 13.009959
+    },
+    {
+      "rank": 10.0,
+      "player": "Joe Mixon",
+      "ppg": 12.929785
+    },
+    {
+      "rank": 11.0,
+      "player": "Jonathan Taylor",
+      "ppg": 12.907993
+    },
+    {
+      "rank": 12.0,
+      "player": "James Conner",
+      "ppg": 12.804311
+    },
+    {
+      "rank": 13.0,
+      "player": "Kyren Williams",
+      "ppg": 12.803769
+    },
+    {
+      "rank": 14.0,
+      "player": "James Cook",
+      "ppg": 12.635178
+    },
+    {
+      "rank": 15.0,
+      "player": "Kenneth Walker III",
+      "ppg": 12.486574
+    },
+    {
+      "rank": 16.0,
+      "player": "Chuba Hubbard",
+      "ppg": 12.030789
+    },
+    {
+      "rank": 17.0,
+      "player": "David Montgomery",
+      "ppg": 11.772822
+    },
+    {
+      "rank": 18.0,
+      "player": "Chase Brown",
+      "ppg": 10.85105
+    },
+    {
+      "rank": 19.0,
+      "player": "Christian McCaffrey",
+      "ppg": 10.72642
+    },
+    {
+      "rank": 20.0,
+      "player": "Aaron Jones",
+      "ppg": 10.319377
+    },
+    {
+      "rank": 21.0,
+      "player": "Tony Pollard",
+      "ppg": 10.076751
+    },
+    {
+      "rank": 22.0,
+      "player": "Najee Harris",
+      "ppg": 9.690212
+    },
+    {
+      "rank": 23.0,
+      "player": "J.K. Dobbins",
+      "ppg": 9.58503
+    },
+    {
+      "rank": 24.0,
+      "player": "D'Andre Swift",
+      "ppg": 9.376688
+    },
+    {
+      "rank": 25.0,
+      "player": "Austin Ekeler",
+      "ppg": 9.292506
+    },
+    {
+      "rank": 26.0,
+      "player": "Tyrone Tracy Jr.",
+      "ppg": 9.208784
+    },
+    {
+      "rank": 27.0,
+      "player": "Rachaad White",
+      "ppg": 9.037267
+    },
+    {
+      "rank": 28.0,
+      "player": "Rhamondre Stevenson",
+      "ppg": 8.645573
+    },
+    {
+      "rank": 29.0,
+      "player": "Zach Charbonnet",
+      "ppg": 8.608443
+    },
+    {
+      "rank": 30.0,
+      "player": "Travis Etienne",
+      "ppg": 8.336931
+    },
+    {
+      "rank": 31.0,
+      "player": "Brian Robinson Jr.",
+      "ppg": 8.063169
+    },
+    {
+      "rank": 32.0,
+      "player": "Jordan Mason",
+      "ppg": 7.8008394
+    },
+    {
+      "rank": 33.0,
+      "player": "Jaylen Warren",
+      "ppg": 7.411744
+    },
+    {
+      "rank": 34.0,
+      "player": "Rico Dowdle",
+      "ppg": 7.1549907
+    },
+    {
+      "rank": 35.0,
+      "player": "Tyjae Spears",
+      "ppg": 7.1476088
+    },
+    {
+      "rank": 36.0,
+      "player": "Kareem Hunt",
+      "ppg": 7.0884385
+    },
+    {
+      "rank": 37.0,
+      "player": "Jerome Ford",
+      "ppg": 7.04252
+    },
+    {
+      "rank": 38.0,
+      "player": "Isiah Pacheco",
+      "ppg": 6.9563346
+    },
+    {
+      "rank": 39.0,
+      "player": "Tyler Allgeier",
+      "ppg": 6.8894653
+    },
+    {
+      "rank": 40.0,
+      "player": "Tank Bigsby",
+      "ppg": 6.8254404
+    },
+    {
+      "rank": 41.0,
+      "player": "Ray Davis",
+      "ppg": 6.6722918
+    },
+    {
+      "rank": 42.0,
+      "player": "Isaac Guerendo",
+      "ppg": 6.595346
+    },
+    {
+      "rank": 43.0,
+      "player": "Dameon Pierce",
+      "ppg": 6.555713
+    },
+    {
+      "rank": 44.0,
+      "player": "Keaton Mitchell",
+      "ppg": 6.537853
+    },
+    {
+      "rank": 45.0,
+      "player": "Tyler Badie",
+      "ppg": 6.415388
+    },
+    {
+      "rank": 46.0,
+      "player": "Javonte Williams",
+      "ppg": 6.3942556
+    },
+    {
+      "rank": 47.0,
+      "player": "Emanuel Wilson",
+      "ppg": 6.3608966
+    },
+    {
+      "rank": 48.0,
+      "player": "Nick Chubb",
+      "ppg": 6.298222
+    },
+    {
+      "rank": 49.0,
+      "player": "Antonio Gibson",
+      "ppg": 6.1426315
+    },
+    {
+      "rank": 50.0,
+      "player": "Kendre Miller",
+      "ppg": 6.1220436
+    },
+    {
+      "rank": 51.0,
+      "player": "Jaleel McLaughlin",
+      "ppg": 6.094292
+    },
+    {
+      "rank": 52.0,
+      "player": "Miles Sanders",
+      "ppg": 5.9348464
+    },
+    {
+      "rank": 53.0,
+      "player": "Devin Singletary",
+      "ppg": 5.9029646
+    },
+    {
+      "rank": 54.0,
+      "player": "Michael Carter",
+      "ppg": 5.792119
+    },
+    {
+      "rank": 55.0,
+      "player": "Zack Moss",
+      "ppg": 5.69555
+    },
+    {
+      "rank": 56.0,
+      "player": "Raheem Mostert",
+      "ppg": 5.6541853
+    },
+    {
+      "rank": 57.0,
+      "player": "Gus Edwards",
+      "ppg": 5.6452417
+    },
+    {
+      "rank": 58.0,
+      "player": "Chris Brooks",
+      "ppg": 5.63938
+    },
+    {
+      "rank": 59.0,
+      "player": "Tony Jones",
+      "ppg": 5.5395083
+    },
+    {
+      "rank": 60.0,
+      "player": "Alexander Mattison",
+      "ppg": 5.464193
+    },
+    {
+      "rank": 61.0,
+      "player": "Emari Demercado",
+      "ppg": 5.3319426
+    },
+    {
+      "rank": 62.0,
+      "player": "Cam Akers",
+      "ppg": 5.2777185
+    },
+    {
+      "rank": 63.0,
+      "player": "Braelon Allen",
+      "ppg": 5.215256
+    },
+    {
+      "rank": 64.0,
+      "player": "Roschon Johnson",
+      "ppg": 5.1510015
+    },
+    {
+      "rank": 65.0,
+      "player": "Jacob Kibodi",
+      "ppg": 5.0249352
+    },
+    {
+      "rank": 66.0,
+      "player": "Sincere McCormick",
+      "ppg": 5.0022764
+    },
+    {
+      "rank": 67.0,
+      "player": "Trey Benson",
+      "ppg": 4.870065
+    },
+    {
+      "rank": 68.0,
+      "player": "Clyde Edwards-Helaire",
+      "ppg": 4.837337
+    },
+    {
+      "rank": 69.0,
+      "player": "Ty Johnson",
+      "ppg": 4.7389803
+    },
+    {
+      "rank": 70.0,
+      "player": "Justice Hill",
+      "ppg": 4.6255126
+    },
+    {
+      "rank": 71.0,
+      "player": "Kimani Vidal",
+      "ppg": 4.5885353
+    },
+    {
+      "rank": 72.0,
+      "player": "Jaylen Wright",
+      "ppg": 4.5397224
+    },
+    {
+      "rank": 73.0,
+      "player": "Audric Estime",
+      "ppg": 4.4884205
+    },
+    {
+      "rank": 74.0,
+      "player": "Sean Tucker",
+      "ppg": 4.4269238
+    },
+    {
+      "rank": 75.0,
+      "player": "Ezekiel Elliott",
+      "ppg": 4.377361
+    },
+    {
+      "rank": 76.0,
+      "player": "Isaiah Davis",
+      "ppg": 4.317208
+    },
+    {
+      "rank": 77.0,
+      "player": "Samaje Perine",
+      "ppg": 4.269818
+    },
+    {
+      "rank": 78.0,
+      "player": "Zamir White",
+      "ppg": 4.1569257
+    },
+    {
+      "rank": 79.0,
+      "player": "Tyler Goodson",
+      "ppg": 4.1269026
+    },
+    {
+      "rank": 80.0,
+      "player": "D'Onta Foreman",
+      "ppg": 4.113927
+    },
+    {
+      "rank": 81.0,
+      "player": "Kenny McIntosh",
+      "ppg": 4.0909348
+    },
+    {
+      "rank": 82.0,
+      "player": "Khalil Herbert",
+      "ppg": 4.0348463
+    },
+    {
+      "rank": 83.0,
+      "player": "Ameer Abdullah",
+      "ppg": 3.9533348
+    },
+    {
+      "rank": 84.0,
+      "player": "Chris Rodriguez",
+      "ppg": 3.9467764
+    },
+    {
+      "rank": 85.0,
+      "player": "Cordarrelle Patterson",
+      "ppg": 3.8980312
+    },
+    {
+      "rank": 86.0,
+      "player": "Dalvin Cook",
+      "ppg": 3.789679
+    },
+    {
+      "rank": 87.0,
+      "player": "Ty Chandler",
+      "ppg": 3.7730215
+    },
+    {
+      "rank": 88.0,
+      "player": "Kendall Milton",
+      "ppg": 3.518998
+    },
+    {
+      "rank": 89.0,
+      "player": "Tyrion Davis-Price",
+      "ppg": 3.4490917
+    },
+    {
+      "rank": 90.0,
+      "player": "Deuce Vaughn",
+      "ppg": 3.4393137
+    },
+    {
+      "rank": 91.0,
+      "player": "Jamaal Williams",
+      "ppg": 3.4045122
+    },
+    {
+      "rank": 92.0,
+      "player": "D.J. Williams",
+      "ppg": 3.359472
+    },
+    {
+      "rank": 93.0,
+      "player": "Dante Miller",
+      "ppg": 3.355819
+    },
+    {
+      "rank": 94.0,
+      "player": "Jordan Mims",
+      "ppg": 3.353202
+    },
+    {
+      "rank": 95.0,
+      "player": "Carlos Washington",
+      "ppg": 3.3529737
+    },
+    {
+      "rank": 96.0,
+      "player": "Keilan Robinson",
+      "ppg": 3.3370998
+    },
+    {
+      "rank": 97.0,
+      "player": "Kenneth Gainwell",
+      "ppg": 3.196733
+    },
+    {
+      "rank": 98.0,
+      "player": "Jase McClellan",
+      "ppg": 3.1593757
+    },
+    {
+      "rank": 99.0,
+      "player": "Dylan Laube",
+      "ppg": 3.0710926
+    },
+    {
+      "rank": 100.0,
+      "player": "Carson Steele",
+      "ppg": 3.0608606
+    },
+    {
+      "rank": 101.0,
+      "player": "Jonathon Brooks",
+      "ppg": 3.0379527
+    },
+    {
+      "rank": 102.0,
+      "player": "Hassan Haskins",
+      "ppg": 3.0149708
+    },
+    {
+      "rank": 103.0,
+      "player": "Pierre Strong",
+      "ppg": 2.9761095
+    },
+    {
+      "rank": 104.0,
+      "player": "Jeff Wilson",
+      "ppg": 2.9702332
+    },
+    {
+      "rank": 105.0,
+      "player": "Jeremy McNichols",
+      "ppg": 2.962068
+    },
+    {
+      "rank": 106.0,
+      "player": "Blake Corum",
+      "ppg": 2.9192228
+    },
+    {
+      "rank": 107.0,
+      "player": "Craig Reynolds",
+      "ppg": 2.8421504
+    },
+    {
+      "rank": 108.0,
+      "player": "Raheem Blackshear",
+      "ppg": 2.8164554
+    },
+    {
+      "rank": 109.0,
+      "player": "Jermar Jefferson",
+      "ppg": 2.788818
+    },
+    {
+      "rank": 110.0,
+      "player": "Patrick Taylor",
+      "ppg": 2.7764533
+    },
+    {
+      "rank": 111.0,
+      "player": "MarShawn Lloyd",
+      "ppg": 2.7488754
+    },
+    {
+      "rank": 112.0,
+      "player": "Jamycal Hasty",
+      "ppg": 2.7292721
+    },
+    {
+      "rank": 113.0,
+      "player": "Terrell Jennings",
+      "ppg": 2.711337
+    },
+    {
+      "rank": 114.0,
+      "player": "Trey Sermon",
+      "ppg": 2.6688871
+    },
+    {
+      "rank": 115.0,
+      "player": "George Holani",
+      "ppg": 2.600532
+    },
+    {
+      "rank": 116.0,
+      "player": "Chris Collier",
+      "ppg": 2.5764194
+    },
+    {
+      "rank": 117.0,
+      "player": "Darrynton Evans",
+      "ppg": 2.5602505
+    },
+    {
+      "rank": 118.0,
+      "player": "British Brooks",
+      "ppg": 2.5354095
+    },
+    {
+      "rank": 119.0,
+      "player": "Dare Ogunbowale",
+      "ppg": 2.4979455
+    },
+    {
+      "rank": 120.0,
+      "player": "Cody Schrader",
+      "ppg": 2.4939883
+    },
+    {
+      "rank": 121.0,
+      "player": "Will Shipley",
+      "ppg": 2.4545023
+    },
+    {
+      "rank": 122.0,
+      "player": "Sione Vaki",
+      "ppg": 2.382884
+    },
+    {
+      "rank": 123.0,
+      "player": "Rasheen Ali",
+      "ppg": 2.284359
+    },
+    {
+      "rank": 124.0,
+      "player": "Kyle Juszczyk",
+      "ppg": 2.2681124
+    },
+    {
+      "rank": 125.0,
+      "player": "Aaron Shampklin",
+      "ppg": 2.2563553
+    },
+    {
+      "rank": 126.0,
+      "player": "Blake Watson",
+      "ppg": 2.2449427
+    },
+    {
+      "rank": 127.0,
+      "player": "Myles Gaskin",
+      "ppg": 2.2350297
+    },
+    {
+      "rank": 128.0,
+      "player": "D'Ernest Johnson",
+      "ppg": 2.2327118
+    },
+    {
+      "rank": 129.0,
+      "player": "Ronnie Rivers",
+      "ppg": 2.2186975
+    },
+    {
+      "rank": 130.0,
+      "player": "Jonathan Ward",
+      "ppg": 2.1669922
+    },
+    {
+      "rank": 131.0,
+      "player": "Julius Chestnut",
+      "ppg": 2.153075
+    },
+    {
+      "rank": 132.0,
+      "player": "Mike Boone",
+      "ppg": 2.059079
+    },
+    {
+      "rank": 133.0,
+      "player": "Hunter Luepke",
+      "ppg": 2.0465674
+    },
+    {
+      "rank": 134.0,
+      "player": "J.J. Taylor",
+      "ppg": 2.0169406
+    },
+    {
+      "rank": 135.0,
+      "player": "Eric Gray",
+      "ppg": 1.970323
+    },
+    {
+      "rank": 136.0,
+      "player": "DeeJay Dallas",
+      "ppg": 1.9560326
+    },
+    {
+      "rank": 137.0,
+      "player": "Joshua Kelley",
+      "ppg": 1.9293169
+    },
+    {
+      "rank": 138.0,
+      "player": "Jaret Patterson",
+      "ppg": 1.9021766
+    },
+    {
+      "rank": 139.0,
+      "player": "Evan Hull",
+      "ppg": 1.5383047
+    },
+    {
+      "rank": 140.0,
+      "player": "Alec Ingold",
+      "ppg": 1.4317636
+    },
+    {
+      "rank": 141.0,
+      "player": "Troy Hairston",
+      "ppg": 1.4225559
+    },
+    {
+      "rank": 142.0,
+      "player": "Kene Nwangwu",
+      "ppg": 1.2845912
+    },
+    {
+      "rank": 143.0,
+      "player": "Keaontay Ingram",
+      "ppg": 1.2786139
+    },
+    {
+      "rank": 144.0,
+      "player": "Ke'Shawn Vaughn",
+      "ppg": 1.2564343
+    },
+    {
+      "rank": 145.0,
+      "player": "John Kelly",
+      "ppg": 1.235061
+    },
+    {
+      "rank": 146.0,
+      "player": "Travis Homer",
+      "ppg": 1.2260889
+    },
+    {
+      "rank": 147.0,
+      "player": "Gary Brightwell",
+      "ppg": 1.2118435
+    },
+    {
+      "rank": 148.0,
+      "player": "Avery Williams",
+      "ppg": 1.0976515
+    },
+    {
+      "rank": 149.0,
+      "player": "Trayveon Williams",
+      "ppg": 1.0821778
+    },
+    {
+      "rank": 150.0,
+      "player": "Michael Burton",
+      "ppg": 0.9935754
+    },
+    {
+      "rank": 151.0,
+      "player": "C.J. Ham",
+      "ppg": 0.8390948
+    },
+    {
+      "rank": 152.0,
+      "player": "Patrick Ricard",
+      "ppg": 0.818876
+    },
+    {
+      "rank": 153.0,
+      "player": "Adam Prentice",
+      "ppg": 0.7960473
+    },
+    {
+      "rank": 154.0,
+      "player": "Jakob Johnson",
+      "ppg": 0.7872027
+    },
+    {
+      "rank": 155.0,
+      "player": "Khari Blasingame",
+      "ppg": 0.7809197
+    },
+    {
+      "rank": 156.0,
+      "player": "Reggie Gilliam",
+      "ppg": 0.7699832
+    }
+  ],
+  "TE": [
+    {
+      "rank": 1.0,
+      "player": "Brock Bowers",
+      "ppg": 12.4706
+    },
+    {
+      "rank": 2.0,
+      "player": "George Kittle",
+      "ppg": 10.625777
+    },
+    {
+      "rank": 3.0,
+      "player": "Trey McBride",
+      "ppg": 9.688758
+    },
+    {
+      "rank": 4.0,
+      "player": "Travis Kelce",
+      "ppg": 9.469428
+    },
+    {
+      "rank": 5.0,
+      "player": "Sam LaPorta",
+      "ppg": 8.389908
+    },
+    {
+      "rank": 6.0,
+      "player": "Mark Andrews",
+      "ppg": 8.239586
+    },
+    {
+      "rank": 7.0,
+      "player": "David Njoku",
+      "ppg": 7.198138
+    },
+    {
+      "rank": 8.0,
+      "player": "Jonnu Smith",
+      "ppg": 7.176982
+    },
+    {
+      "rank": 9.0,
+      "player": "Dallas Goedert",
+      "ppg": 6.8613987
+    },
+    {
+      "rank": 10.0,
+      "player": "Cade Otton",
+      "ppg": 6.495208
+    },
+    {
+      "rank": 11.0,
+      "player": "Taysom Hill",
+      "ppg": 6.451742
+    },
+    {
+      "rank": 12.0,
+      "player": "T.J. Hockenson",
+      "ppg": 6.389687
+    },
+    {
+      "rank": 13.0,
+      "player": "Tucker Kraft",
+      "ppg": 6.334902
+    },
+    {
+      "rank": 14.0,
+      "player": "Hunter Henry",
+      "ppg": 5.839956
+    },
+    {
+      "rank": 15.0,
+      "player": "Evan Engram",
+      "ppg": 5.8197093
+    },
+    {
+      "rank": 16.0,
+      "player": "Pat Freiermuth",
+      "ppg": 5.536574
+    },
+    {
+      "rank": 17.0,
+      "player": "Dalton Kincaid",
+      "ppg": 5.520925
+    },
+    {
+      "rank": 18.0,
+      "player": "Zach Ertz",
+      "ppg": 5.360552
+    },
+    {
+      "rank": 19.0,
+      "player": "Cole Kmet",
+      "ppg": 5.3489757
+    },
+    {
+      "rank": 20.0,
+      "player": "Ja'Tavion Sanders",
+      "ppg": 5.088995
+    },
+    {
+      "rank": 21.0,
+      "player": "Jake Ferguson",
+      "ppg": 4.941911
+    },
+    {
+      "rank": 22.0,
+      "player": "Isaiah Likely",
+      "ppg": 4.8954167
+    },
+    {
+      "rank": 23.0,
+      "player": "Kyle Pitts",
+      "ppg": 4.8837466
+    },
+    {
+      "rank": 24.0,
+      "player": "Mike Gesicki",
+      "ppg": 4.651441
+    },
+    {
+      "rank": 25.0,
+      "player": "Dalton Schultz",
+      "ppg": 4.5929236
+    },
+    {
+      "rank": 26.0,
+      "player": "Chigoziem Okonkwo",
+      "ppg": 4.5339475
+    },
+    {
+      "rank": 27.0,
+      "player": "Noah Fant",
+      "ppg": 4.5258226
+    },
+    {
+      "rank": 28.0,
+      "player": "Juwan Johnson",
+      "ppg": 4.4439864
+    },
+    {
+      "rank": 29.0,
+      "player": "Theo Johnson",
+      "ppg": 4.4287047
+    },
+    {
+      "rank": 30.0,
+      "player": "Tyler Higbee",
+      "ppg": 4.3222427
+    },
+    {
+      "rank": 31.0,
+      "player": "AJ Barner",
+      "ppg": 4.232379
+    },
+    {
+      "rank": 32.0,
+      "player": "Tyler Conklin",
+      "ppg": 4.2075853
+    },
+    {
+      "rank": 33.0,
+      "player": "Noah Gray",
+      "ppg": 4.188764
+    },
+    {
+      "rank": 34.0,
+      "player": "Austin Hooper",
+      "ppg": 3.968479
+    },
+    {
+      "rank": 35.0,
+      "player": "Foster Moreau",
+      "ppg": 3.4867873
+    },
+    {
+      "rank": 36.0,
+      "player": "Will Dissly",
+      "ppg": 3.3817518
+    },
+    {
+      "rank": 37.0,
+      "player": "Tommy Tremble",
+      "ppg": 3.2527215
+    },
+    {
+      "rank": 38.0,
+      "player": "Brenton Strange",
+      "ppg": 3.1976833
+    },
+    {
+      "rank": 39.0,
+      "player": "Jordan Akins",
+      "ppg": 3.0251355
+    },
+    {
+      "rank": 40.0,
+      "player": "Erick All",
+      "ppg": 2.9672713
+    },
+    {
+      "rank": 41.0,
+      "player": "Dawson Knox",
+      "ppg": 2.7505918
+    },
+    {
+      "rank": 42.0,
+      "player": "Luke Schoonmaker",
+      "ppg": 2.7503786
+    },
+    {
+      "rank": 43.0,
+      "player": "Cade Stover",
+      "ppg": 2.689915
+    },
+    {
+      "rank": 44.0,
+      "player": "Josh Whyle",
+      "ppg": 2.5626884
+    },
+    {
+      "rank": 45.0,
+      "player": "Michael Mayer",
+      "ppg": 2.4290137
+    },
+    {
+      "rank": 46.0,
+      "player": "Tanner Hudson",
+      "ppg": 2.419187
+    },
+    {
+      "rank": 47.0,
+      "player": "Elijah Higgins",
+      "ppg": 2.401398
+    },
+    {
+      "rank": 48.0,
+      "player": "Devin Culp",
+      "ppg": 2.3974876
+    },
+    {
+      "rank": 49.0,
+      "player": "Colby Parkinson",
+      "ppg": 2.3348298
+    },
+    {
+      "rank": 50.0,
+      "player": "Darnell Washington",
+      "ppg": 2.3020093
+    },
+    {
+      "rank": 51.0,
+      "player": "Josh Oliver",
+      "ppg": 2.2627223
+    },
+    {
+      "rank": 52.0,
+      "player": "Stone Smartt",
+      "ppg": 2.0023522
+    },
+    {
+      "rank": 53.0,
+      "player": "Charlie Kolar",
+      "ppg": 1.9738772
+    },
+    {
+      "rank": 54.0,
+      "player": "Grant Calcaterra",
+      "ppg": 1.9728903
+    },
+    {
+      "rank": 55.0,
+      "player": "Gerald Everett",
+      "ppg": 1.9598187
+    },
+    {
+      "rank": 56.0,
+      "player": "Kylen Granson",
+      "ppg": 1.9382331
+    },
+    {
+      "rank": 57.0,
+      "player": "Adam Trautman",
+      "ppg": 1.9268591
+    },
+    {
+      "rank": 58.0,
+      "player": "Lucas Krull",
+      "ppg": 1.8972872
+    },
+    {
+      "rank": 59.0,
+      "player": "Greg Dulcich",
+      "ppg": 1.8912147
+    },
+    {
+      "rank": 60.0,
+      "player": "Brevyn Spann-Ford",
+      "ppg": 1.888049
+    },
+    {
+      "rank": 61.0,
+      "player": "Johnny Mundt",
+      "ppg": 1.7896168
+    },
+    {
+      "rank": 62.0,
+      "player": "Daniel Bellinger",
+      "ppg": 1.7611578
+    },
+    {
+      "rank": 63.0,
+      "player": "Will Mallory",
+      "ppg": 1.6902075
+    },
+    {
+      "rank": 64.0,
+      "player": "Hayden Hurst",
+      "ppg": 1.6653532
+    },
+    {
+      "rank": 65.0,
+      "player": "Mo Alie-Cox",
+      "ppg": 1.6467807
+    },
+    {
+      "rank": 66.0,
+      "player": "Ben Sinnott",
+      "ppg": 1.6073943
+    },
+    {
+      "rank": 67.0,
+      "player": "Harrison Bryant",
+      "ppg": 1.59117
+    },
+    {
+      "rank": 68.0,
+      "player": "Andrew Ogletree",
+      "ppg": 1.5902548
+    },
+    {
+      "rank": 69.0,
+      "player": "Payne Durham",
+      "ppg": 1.5854695
+    },
+    {
+      "rank": 70.0,
+      "player": "Luke Musgrave",
+      "ppg": 1.5850567
+    },
+    {
+      "rank": 71.0,
+      "player": "Peyton Hendershot",
+      "ppg": 1.532902
+    },
+    {
+      "rank": 72.0,
+      "player": "Nate Adkins",
+      "ppg": 1.5017216
+    },
+    {
+      "rank": 73.0,
+      "player": "Brock Wright",
+      "ppg": 1.4938196
+    },
+    {
+      "rank": 74.0,
+      "player": "Jody Fortson",
+      "ppg": 1.4527774
+    },
+    {
+      "rank": 75.0,
+      "player": "Drew Sample",
+      "ppg": 1.3989484
+    },
+    {
+      "rank": 76.0,
+      "player": "E.J. Jenkins",
+      "ppg": 1.398834
+    },
+    {
+      "rank": 77.0,
+      "player": "Jeremy Ruckert",
+      "ppg": 1.3710923
+    },
+    {
+      "rank": 78.0,
+      "player": "Tip Reiman",
+      "ppg": 1.3510226
+    },
+    {
+      "rank": 79.0,
+      "player": "Connor Heyward",
+      "ppg": 1.3445659
+    },
+    {
+      "rank": 80.0,
+      "player": "Jaheim Bell",
+      "ppg": 1.3344134
+    },
+    {
+      "rank": 81.0,
+      "player": "John Bates",
+      "ppg": 1.3297102
+    },
+    {
+      "rank": 82.0,
+      "player": "Irv Smith Jr.",
+      "ppg": 1.2715968
+    },
+    {
+      "rank": 83.0,
+      "player": "Zach Davidson",
+      "ppg": 1.263815
+    },
+    {
+      "rank": 84.0,
+      "player": "Julian Hill",
+      "ppg": 1.2300516
+    },
+    {
+      "rank": 85.0,
+      "player": "Baylor Cupp",
+      "ppg": 1.2215393
+    },
+    {
+      "rank": 86.0,
+      "player": "Durham Smythe",
+      "ppg": 1.2049123
+    },
+    {
+      "rank": 87.0,
+      "player": "Blake Whiteheart",
+      "ppg": 1.178268
+    },
+    {
+      "rank": 88.0,
+      "player": "Nick Vannett",
+      "ppg": 1.1645325
+    },
+    {
+      "rank": 89.0,
+      "player": "Ben Sims",
+      "ppg": 1.1508982
+    },
+    {
+      "rank": 90.0,
+      "player": "Tyler Mabry",
+      "ppg": 1.14758
+    },
+    {
+      "rank": 91.0,
+      "player": "Dallin Holker",
+      "ppg": 1.1468421
+    },
+    {
+      "rank": 92.0,
+      "player": "MyCole Pruitt",
+      "ppg": 1.1304151
+    },
+    {
+      "rank": 93.0,
+      "player": "Brevin Jordan",
+      "ppg": 1.1302246
+    },
+    {
+      "rank": 94.0,
+      "player": "Shane Zylstra",
+      "ppg": 1.1071016
+    },
+    {
+      "rank": 95.0,
+      "player": "Robert Tonyan",
+      "ppg": 1.096273
+    },
+    {
+      "rank": 96.0,
+      "player": "Pharaoh Brown",
+      "ppg": 1.0799167
+    },
+    {
+      "rank": 97.0,
+      "player": "C.J. Uzomah",
+      "ppg": 1.077177
+    },
+    {
+      "rank": 98.0,
+      "player": "Luke Farrell",
+      "ppg": 1.0220408
+    },
+    {
+      "rank": 99.0,
+      "player": "Feleipe Franks",
+      "ppg": 0.9718001
+    },
+    {
+      "rank": 100.0,
+      "player": "Quintin Morris",
+      "ppg": 0.9627704
+    },
+    {
+      "rank": 101.0,
+      "player": "Stephen Sullivan",
+      "ppg": 0.9184054
+    },
+    {
+      "rank": 102.0,
+      "player": "Justin Shorter",
+      "ppg": 0.8940143
+    },
+    {
+      "rank": 103.0,
+      "player": "Colson Yankoff",
+      "ppg": 0.87002826
+    },
+    {
+      "rank": 104.0,
+      "player": "Cam Grandy",
+      "ppg": 0.8672671
+    },
+    {
+      "rank": 105.0,
+      "player": "Davis Allen",
+      "ppg": 0.86514497
+    },
+    {
+      "rank": 106.0,
+      "player": "Jake Tonges",
+      "ppg": 0.8621681
+    },
+    {
+      "rank": 107.0,
+      "player": "Eric Saubert",
+      "ppg": 0.86127716
+    },
+    {
+      "rank": 108.0,
+      "player": "Brayden Willis",
+      "ppg": 0.8562839
+    },
+    {
+      "rank": 109.0,
+      "player": "Brenden Bates",
+      "ppg": 0.84879506
+    },
+    {
+      "rank": 110.0,
+      "player": "Teagan Quitoriano",
+      "ppg": 0.8429995
+    },
+    {
+      "rank": 111.0,
+      "player": "Tanner Conner",
+      "ppg": 0.8426101
+    },
+    {
+      "rank": 112.0,
+      "player": "Tanner McLachlan",
+      "ppg": 0.8382486
+    },
+    {
+      "rank": 113.0,
+      "player": "Thomas Odukoya",
+      "ppg": 0.83667594
+    },
+    {
+      "rank": 114.0,
+      "player": "Jack Westover",
+      "ppg": 0.8337389
+    },
+    {
+      "rank": 115.0,
+      "player": "Kenny Yeboah",
+      "ppg": 0.8168304
+    },
+    {
+      "rank": 116.0,
+      "player": "Jared Wiley",
+      "ppg": 0.81655675
+    },
+    {
+      "rank": 117.0,
+      "player": "Zack Kuntz",
+      "ppg": 0.81275684
+    },
+    {
+      "rank": 118.0,
+      "player": "John FitzPatrick",
+      "ppg": 0.8111392
+    },
+    {
+      "rank": 119.0,
+      "player": "Ko Kieft",
+      "ppg": 0.8042604
+    },
+    {
+      "rank": 120.0,
+      "player": "James Mitchell",
+      "ppg": 0.80229163
+    },
+    {
+      "rank": 121.0,
+      "player": "Hunter Long",
+      "ppg": 0.7998147
+    },
+    {
+      "rank": 122.0,
+      "player": "Charlie Woerner",
+      "ppg": 0.7927979
+    },
+    {
+      "rank": 123.0,
+      "player": "Andrew Beck",
+      "ppg": 0.79194766
+    },
+    {
+      "rank": 124.0,
+      "player": "Nikola Kalinic",
+      "ppg": 0.7885511
+    },
+    {
+      "rank": 125.0,
+      "player": "Mitchell Wilcox",
+      "ppg": 0.77610224
+    },
+    {
+      "rank": 126.0,
+      "player": "David Martin-Robinson",
+      "ppg": 0.70471054
+    },
+    {
+      "rank": 127.0,
+      "player": "Travis Vokolek",
+      "ppg": 0.6981979
+    },
+    {
+      "rank": 128.0,
+      "player": "Josiah Deguara",
+      "ppg": 0.68516177
+    },
+    {
+      "rank": 129.0,
+      "player": "Princeton Fant",
+      "ppg": 0.6832463
+    },
+    {
+      "rank": 130.0,
+      "player": "Rodney Williams",
+      "ppg": 0.6753856
+    },
+    {
+      "rank": 131.0,
+      "player": "John Samuel Shenker",
+      "ppg": 0.6652036
+    },
+    {
+      "rank": 132.0,
+      "player": "Ross Dwelley",
+      "ppg": 0.6495184
+    },
+    {
+      "rank": 133.0,
+      "player": "Eric Tomlinson",
+      "ppg": 0.62288487
+    },
+    {
+      "rank": 134.0,
+      "player": "Jack Stoll",
+      "ppg": 0.6057169
+    },
+    {
+      "rank": 135.0,
+      "player": "Tucker Fisk",
+      "ppg": 0.60330904
+    },
+    {
+      "rank": 136.0,
+      "player": "Brady Russell",
+      "ppg": 0.5946221
+    },
+    {
+      "rank": 137.0,
+      "player": "Jordan Matthews",
+      "ppg": 0.57741547
+    },
+    {
+      "rank": 138.0,
+      "player": "Marcedes Lewis",
+      "ppg": 0.5656573
+    },
+    {
+      "rank": 139.0,
+      "player": "Ian Thomas",
+      "ppg": 0.5652947
+    },
+    {
+      "rank": 140.0,
+      "player": "Nick Muse",
+      "ppg": 0.5498447
+    },
+    {
+      "rank": 141.0,
+      "player": "Anthony Firkser",
+      "ppg": 0.5050573
+    },
+    {
+      "rank": 142.0,
+      "player": "Parker Hesse",
+      "ppg": 0.49409035
+    },
+    {
+      "rank": 143.0,
+      "player": "Chris Manhertz",
+      "ppg": 0.45667818
+    },
+    {
+      "rank": 144.0,
+      "player": "Geoff Swaim",
+      "ppg": 0.36516896
+    }
+  ],
+  "WR": [
+    {
+      "rank": 1.0,
+      "player": "Ja'Marr Chase",
+      "ppg": 15.430802
+    },
+    {
+      "rank": 2.0,
+      "player": "Justin Jefferson",
+      "ppg": 14.144032
+    },
+    {
+      "rank": 3.0,
+      "player": "Malik Nabers",
+      "ppg": 13.831751
+    },
+    {
+      "rank": 4.0,
+      "player": "CeeDee Lamb",
+      "ppg": 13.800525
+    },
+    {
+      "rank": 5.0,
+      "player": "Amon-Ra St. Brown",
+      "ppg": 13.785197
+    },
+    {
+      "rank": 6.0,
+      "player": "A.J. Brown",
+      "ppg": 12.749806
+    },
+    {
+      "rank": 7.0,
+      "player": "Tyreek Hill",
+      "ppg": 12.565837
+    },
+    {
+      "rank": 8.0,
+      "player": "Puka Nacua",
+      "ppg": 12.532546
+    },
+    {
+      "rank": 9.0,
+      "player": "Davante Adams",
+      "ppg": 12.420608
+    },
+    {
+      "rank": 10.0,
+      "player": "Drake London",
+      "ppg": 12.362638
+    },
+    {
+      "rank": 11.0,
+      "player": "Nico Collins",
+      "ppg": 12.240119
+    },
+    {
+      "rank": 12.0,
+      "player": "Ladd McConkey",
+      "ppg": 11.902663
+    },
+    {
+      "rank": 13.0,
+      "player": "Mike Evans",
+      "ppg": 11.838449
+    },
+    {
+      "rank": 14.0,
+      "player": "Brian Thomas",
+      "ppg": 11.761965
+    },
+    {
+      "rank": 15.0,
+      "player": "Rashee Rice",
+      "ppg": 11.666686
+    },
+    {
+      "rank": 16.0,
+      "player": "Tee Higgins",
+      "ppg": 11.210387
+    },
+    {
+      "rank": 17.0,
+      "player": "Marvin Harrison Jr.",
+      "ppg": 11.177302
+    },
+    {
+      "rank": 18.0,
+      "player": "DeVonta Smith",
+      "ppg": 11.133986
+    },
+    {
+      "rank": 19.0,
+      "player": "Chris Godwin",
+      "ppg": 11.011156
+    },
+    {
+      "rank": 20.0,
+      "player": "Garrett Wilson",
+      "ppg": 10.970756
+    },
+    {
+      "rank": 21.0,
+      "player": "Zay Flowers",
+      "ppg": 10.656632
+    },
+    {
+      "rank": 22.0,
+      "player": "Terry McLaurin",
+      "ppg": 10.575887
+    },
+    {
+      "rank": 23.0,
+      "player": "Cooper Kupp",
+      "ppg": 10.4887495
+    },
+    {
+      "rank": 24.0,
+      "player": "Stefon Diggs",
+      "ppg": 10.296821
+    },
+    {
+      "rank": 25.0,
+      "player": "Keenan Allen",
+      "ppg": 10.281774
+    },
+    {
+      "rank": 26.0,
+      "player": "D.K. Metcalf",
+      "ppg": 10.109739
+    },
+    {
+      "rank": 27.0,
+      "player": "Jaxon Smith-Njigba",
+      "ppg": 10.045144
+    },
+    {
+      "rank": 28.0,
+      "player": "Jordan Addison",
+      "ppg": 10.025332
+    },
+    {
+      "rank": 29.0,
+      "player": "Josh Downs",
+      "ppg": 9.988104
+    },
+    {
+      "rank": 30.0,
+      "player": "D.J. Moore",
+      "ppg": 9.928565
+    },
+    {
+      "rank": 31.0,
+      "player": "Xavier Worthy",
+      "ppg": 9.552837
+    },
+    {
+      "rank": 32.0,
+      "player": "Jakobi Meyers",
+      "ppg": 9.442998
+    },
+    {
+      "rank": 33.0,
+      "player": "George Pickens",
+      "ppg": 9.31807
+    },
+    {
+      "rank": 34.0,
+      "player": "Jerry Jeudy",
+      "ppg": 9.265081
+    },
+    {
+      "rank": 35.0,
+      "player": "Jayden Reed",
+      "ppg": 9.090008
+    },
+    {
+      "rank": 36.0,
+      "player": "Tank Dell",
+      "ppg": 8.67028
+    },
+    {
+      "rank": 37.0,
+      "player": "Jaylen Waddle",
+      "ppg": 8.231745
+    },
+    {
+      "rank": 38.0,
+      "player": "Courtland Sutton",
+      "ppg": 8.118458
+    },
+    {
+      "rank": 39.0,
+      "player": "Keon Coleman",
+      "ppg": 7.9343023
+    },
+    {
+      "rank": 40.0,
+      "player": "Jauan Jennings",
+      "ppg": 7.8841777
+    },
+    {
+      "rank": 41.0,
+      "player": "Chris Olave",
+      "ppg": 7.838877
+    },
+    {
+      "rank": 42.0,
+      "player": "Rome Odunze",
+      "ppg": 7.8236775
+    },
+    {
+      "rank": 43.0,
+      "player": "Deebo Samuel",
+      "ppg": 7.6064434
+    },
+    {
+      "rank": 44.0,
+      "player": "Adam Thielen",
+      "ppg": 7.550484
+    },
+    {
+      "rank": 45.0,
+      "player": "Michael Pittman Jr.",
+      "ppg": 7.5213842
+    },
+    {
+      "rank": 46.0,
+      "player": "Jameson Williams",
+      "ppg": 7.51526
+    },
+    {
+      "rank": 47.0,
+      "player": "Quentin Johnston",
+      "ppg": 7.4413495
+    },
+    {
+      "rank": 48.0,
+      "player": "Calvin Ridley",
+      "ppg": 7.333409
+    },
+    {
+      "rank": 49.0,
+      "player": "Jalen Coker",
+      "ppg": 6.987817
+    },
+    {
+      "rank": 50.0,
+      "player": "Jalen McMillan",
+      "ppg": 6.9071455
+    },
+    {
+      "rank": 51.0,
+      "player": "Khalil Shakir",
+      "ppg": 6.8587294
+    },
+    {
+      "rank": 52.0,
+      "player": "Darnell Mooney",
+      "ppg": 6.8532186
+    },
+    {
+      "rank": 53.0,
+      "player": "Brandon Aiyuk",
+      "ppg": 6.8160725
+    },
+    {
+      "rank": 54.0,
+      "player": "Rashid Shaheed",
+      "ppg": 6.7651763
+    },
+    {
+      "rank": 55.0,
+      "player": "Romeo Doubs",
+      "ppg": 6.307727
+    },
+    {
+      "rank": 56.0,
+      "player": "Christian Watson",
+      "ppg": 6.0033913
+    },
+    {
+      "rank": 57.0,
+      "player": "Xavier Legette",
+      "ppg": 5.974635
+    },
+    {
+      "rank": 58.0,
+      "player": "Amari Cooper",
+      "ppg": 5.8901105
+    },
+    {
+      "rank": 59.0,
+      "player": "Wan'Dale Robinson",
+      "ppg": 5.8845587
+    },
+    {
+      "rank": 60.0,
+      "player": "Alec Pierce",
+      "ppg": 5.869624
+    },
+    {
+      "rank": 61.0,
+      "player": "DeAndre Hopkins",
+      "ppg": 5.797473
+    },
+    {
+      "rank": 62.0,
+      "player": "Ricky Pearsall",
+      "ppg": 5.698667
+    },
+    {
+      "rank": 63.0,
+      "player": "Christian Kirk",
+      "ppg": 5.6363435
+    },
+    {
+      "rank": 64.0,
+      "player": "Rashod Bateman",
+      "ppg": 5.384951
+    },
+    {
+      "rank": 65.0,
+      "player": "Allen Lazard",
+      "ppg": 5.3613157
+    },
+    {
+      "rank": 66.0,
+      "player": "Marquise Brown",
+      "ppg": 5.354616
+    },
+    {
+      "rank": 67.0,
+      "player": "Devaughn Vele",
+      "ppg": 5.2016726
+    },
+    {
+      "rank": 68.0,
+      "player": "Demario Douglas",
+      "ppg": 4.841128
+    },
+    {
+      "rank": 69.0,
+      "player": "Troy Franklin",
+      "ppg": 4.7593827
+    },
+    {
+      "rank": 70.0,
+      "player": "Marvin Mims",
+      "ppg": 4.707045
+    },
+    {
+      "rank": 71.0,
+      "player": "Michael Wilson",
+      "ppg": 4.66311
+    },
+    {
+      "rank": 72.0,
+      "player": "Ray-Ray McCloud",
+      "ppg": 4.6337776
+    },
+    {
+      "rank": 73.0,
+      "player": "Tay Martin",
+      "ppg": 4.571355
+    },
+    {
+      "rank": 74.0,
+      "player": "Josh Palmer",
+      "ppg": 4.563797
+    },
+    {
+      "rank": 75.0,
+      "player": "Tyler Lockett",
+      "ppg": 4.5586815
+    },
+    {
+      "rank": 76.0,
+      "player": "Dontayvion Wicks",
+      "ppg": 4.434016
+    },
+    {
+      "rank": 77.0,
+      "player": "Nick Westbrook-Ikhine",
+      "ppg": 4.4309397
+    },
+    {
+      "rank": 78.0,
+      "player": "Darius Slayton",
+      "ppg": 4.3943057
+    },
+    {
+      "rank": 79.0,
+      "player": "Tim Patrick",
+      "ppg": 4.3709235
+    },
+    {
+      "rank": 80.0,
+      "player": "Adonai Mitchell",
+      "ppg": 4.2460117
+    },
+    {
+      "rank": 81.0,
+      "player": "Gabriel Davis",
+      "ppg": 4.1829953
+    },
+    {
+      "rank": 82.0,
+      "player": "Tyrell Shavers",
+      "ppg": 4.132191
+    },
+    {
+      "rank": 83.0,
+      "player": "Andrei Iosivas",
+      "ppg": 4.0209975
+    },
+    {
+      "rank": 84.0,
+      "player": "KaVontae Turpin",
+      "ppg": 3.9539528
+    },
+    {
+      "rank": 85.0,
+      "player": "Tre Tucker",
+      "ppg": 3.8912423
+    },
+    {
+      "rank": 86.0,
+      "player": "Calvin Austin III",
+      "ppg": 3.885451
+    },
+    {
+      "rank": 87.0,
+      "player": "Jalen Tolbert",
+      "ppg": 3.8306224
+    },
+    {
+      "rank": 88.0,
+      "player": "Diontae Johnson",
+      "ppg": 3.8245666
+    },
+    {
+      "rank": 89.0,
+      "player": "Demarcus Robinson",
+      "ppg": 3.7639906
+    },
+    {
+      "rank": 90.0,
+      "player": "Tutu Atwell",
+      "ppg": 3.726696
+    },
+    {
+      "rank": 91.0,
+      "player": "Noah Brown",
+      "ppg": 3.6448598
+    },
+    {
+      "rank": 92.0,
+      "player": "Brandin Cooks",
+      "ppg": 3.6097538
+    },
+    {
+      "rank": 93.0,
+      "player": "Elijah Moore",
+      "ppg": 3.570854
+    },
+    {
+      "rank": 94.0,
+      "player": "Tyler Boyd",
+      "ppg": 3.5689938
+    },
+    {
+      "rank": 95.0,
+      "player": "Mike Williams",
+      "ppg": 3.520405
+    },
+    {
+      "rank": 96.0,
+      "player": "Jordan Whittington",
+      "ppg": 3.5203502
+    },
+    {
+      "rank": 97.0,
+      "player": "Cedric Tillman",
+      "ppg": 3.4937668
+    },
+    {
+      "rank": 98.0,
+      "player": "Kalif Raymond",
+      "ppg": 3.473575
+    },
+    {
+      "rank": 99.0,
+      "player": "Parker Washington",
+      "ppg": 3.4644475
+    },
+    {
+      "rank": 100.0,
+      "player": "Malik Washington",
+      "ppg": 3.3942094
+    },
+    {
+      "rank": 101.0,
+      "player": "Olamide Zaccheaus",
+      "ppg": 3.3633213
+    },
+    {
+      "rank": 102.0,
+      "player": "Ja'Lynn Polk",
+      "ppg": 3.2655632
+    },
+    {
+      "rank": 103.0,
+      "player": "Mack Hollins",
+      "ppg": 3.2416234
+    },
+    {
+      "rank": 104.0,
+      "player": "Kayshon Boutte",
+      "ppg": 3.218084
+    },
+    {
+      "rank": 105.0,
+      "player": "Luke McCaffrey",
+      "ppg": 3.2154639
+    },
+    {
+      "rank": 106.0,
+      "player": "Greg Dortch",
+      "ppg": 3.1378121
+    },
+    {
+      "rank": 107.0,
+      "player": "Marquez Valdes-Scantling",
+      "ppg": 3.1294804
+    },
+    {
+      "rank": 108.0,
+      "player": "Kendrick Bourne",
+      "ppg": 3.11522
+    },
+    {
+      "rank": 109.0,
+      "player": "Mecole Hardman",
+      "ppg": 3.110539
+    },
+    {
+      "rank": 110.0,
+      "player": "Jalen Nailor",
+      "ppg": 3.0648434
+    },
+    {
+      "rank": 111.0,
+      "player": "Curtis Samuel",
+      "ppg": 3.0613282
+    },
+    {
+      "rank": 112.0,
+      "player": "Tyler Johnson",
+      "ppg": 3.007747
+    },
+    {
+      "rank": 113.0,
+      "player": "Jahan Dotson",
+      "ppg": 2.8631167
+    },
+    {
+      "rank": 114.0,
+      "player": "Kevin Austin",
+      "ppg": 2.8437195
+    },
+    {
+      "rank": 115.0,
+      "player": "Bub Means",
+      "ppg": 2.8243835
+    },
+    {
+      "rank": 116.0,
+      "player": "David Bell",
+      "ppg": 2.81363
+    },
+    {
+      "rank": 117.0,
+      "player": "Trey Palmer",
+      "ppg": 2.7646306
+    },
+    {
+      "rank": 118.0,
+      "player": "DJ Chark",
+      "ppg": 2.7611837
+    },
+    {
+      "rank": 119.0,
+      "player": "Josh Reynolds",
+      "ppg": 2.6566
+    },
+    {
+      "rank": 120.0,
+      "player": "Jonathan Mingo",
+      "ppg": 2.6415222
+    },
+    {
+      "rank": 121.0,
+      "player": "JuJu Smith-Schuster",
+      "ppg": 2.604421
+    },
+    {
+      "rank": 122.0,
+      "player": "David Moore",
+      "ppg": 2.6032329
+    },
+    {
+      "rank": 123.0,
+      "player": "Mason Tipton",
+      "ppg": 2.5763547
+    },
+    {
+      "rank": 124.0,
+      "player": "Odell Beckham Jr.",
+      "ppg": 2.5346663
+    },
+    {
+      "rank": 125.0,
+      "player": "Derius Davis",
+      "ppg": 2.5341978
+    },
+    {
+      "rank": 126.0,
+      "player": "Jha'Quan Jackson",
+      "ppg": 2.5205631
+    },
+    {
+      "rank": 127.0,
+      "player": "Dyami Brown",
+      "ppg": 2.5198987
+    },
+    {
+      "rank": 128.0,
+      "player": "Lil'Jordan Humphrey",
+      "ppg": 2.4626977
+    },
+    {
+      "rank": 129.0,
+      "player": "Ryan Flournoy",
+      "ppg": 2.4325194
+    },
+    {
+      "rank": 130.0,
+      "player": "Sterling Shepard",
+      "ppg": 2.4177556
+    },
+    {
+      "rank": 131.0,
+      "player": "John Metchie",
+      "ppg": 2.4009223
+    },
+    {
+      "rank": 132.0,
+      "player": "K.J. Osborn",
+      "ppg": 2.39083
+    },
+    {
+      "rank": 133.0,
+      "player": "Bo Melton",
+      "ppg": 2.385303
+    },
+    {
+      "rank": 134.0,
+      "player": "Jermaine Burton",
+      "ppg": 2.356523
+    },
+    {
+      "rank": 135.0,
+      "player": "Austin Trammell",
+      "ppg": 2.3413393
+    },
+    {
+      "rank": 136.0,
+      "player": "Johnny Wilson",
+      "ppg": 2.2845817
+    },
+    {
+      "rank": 137.0,
+      "player": "Xavier Gipson",
+      "ppg": 2.2535007
+    },
+    {
+      "rank": 138.0,
+      "player": "Van Jefferson",
+      "ppg": 2.2332482
+    },
+    {
+      "rank": 139.0,
+      "player": "Zay Jones",
+      "ppg": 2.230999
+    },
+    {
+      "rank": 140.0,
+      "player": "Jalen Brooks",
+      "ppg": 2.215802
+    },
+    {
+      "rank": 141.0,
+      "player": "Jalin Hyatt",
+      "ppg": 2.205746
+    },
+    {
+      "rank": 142.0,
+      "player": "Kristian Wilkerson",
+      "ppg": 2.1825385
+    },
+    {
+      "rank": 143.0,
+      "player": "Allen Robinson",
+      "ppg": 2.177299
+    },
+    {
+      "rank": 144.0,
+      "player": "Dante Pettis",
+      "ppg": 2.1722891
+    },
+    {
+      "rank": 145.0,
+      "player": "Ainias Smith",
+      "ppg": 2.1412017
+    },
+    {
+      "rank": 146.0,
+      "player": "Jake Bobo",
+      "ppg": 2.138973
+    },
+    {
+      "rank": 147.0,
+      "player": "Robert Woods",
+      "ppg": 2.133306
+    },
+    {
+      "rank": 148.0,
+      "player": "Ryan Miller",
+      "ppg": 2.1099825
+    },
+    {
+      "rank": 149.0,
+      "player": "Kendric Pryor",
+      "ppg": 2.1049178
+    },
+    {
+      "rank": 150.0,
+      "player": "Nelson Agholor",
+      "ppg": 2.0861511
+    },
+    {
+      "rank": 151.0,
+      "player": "Malik Heath",
+      "ppg": 2.0459695
+    },
+    {
+      "rank": 152.0,
+      "player": "DJ Turner",
+      "ppg": 1.9934833
+    },
+    {
+      "rank": 153.0,
+      "player": "Kadarius Toney",
+      "ppg": 1.9868447
+    },
+    {
+      "rank": 154.0,
+      "player": "Michael Woods II",
+      "ppg": 1.9758255
+    },
+    {
+      "rank": 155.0,
+      "player": "Jacob Cowing",
+      "ppg": 1.9609547
+    },
+    {
+      "rank": 156.0,
+      "player": "Javon Baker",
+      "ppg": 1.9467121
+    },
+    {
+      "rank": 157.0,
+      "player": "Justin Watson",
+      "ppg": 1.9454217
+    },
+    {
+      "rank": 158.0,
+      "player": "Anthony Miller",
+      "ppg": 1.8893609
+    },
+    {
+      "rank": 159.0,
+      "player": "Nikko Remigio",
+      "ppg": 1.8730767
+    },
+    {
+      "rank": 160.0,
+      "player": "Cedrick Wilson Jr.",
+      "ppg": 1.8719374
+    },
+    {
+      "rank": 161.0,
+      "player": "Brandon Johnson",
+      "ppg": 1.8458564
+    },
+    {
+      "rank": 162.0,
+      "player": "Xavier Smith",
+      "ppg": 1.8422064
+    },
+    {
+      "rank": 163.0,
+      "player": "KhaDarel Hodge",
+      "ppg": 1.8379898
+    },
+    {
+      "rank": 164.0,
+      "player": "Rakim Jarrett",
+      "ppg": 1.8157684
+    },
+    {
+      "rank": 165.0,
+      "player": "Isaiah Hodgins",
+      "ppg": 1.8129768
+    },
+    {
+      "rank": 166.0,
+      "player": "Devontez Walker",
+      "ppg": 1.8041625
+    },
+    {
+      "rank": 167.0,
+      "player": "Trenton Irwin",
+      "ppg": 1.7906634
+    },
+    {
+      "rank": 168.0,
+      "player": "Bryce Oliver",
+      "ppg": 1.7799014
+    },
+    {
+      "rank": 169.0,
+      "player": "Devin Duvernay",
+      "ppg": 1.7329379
+    },
+    {
+      "rank": 170.0,
+      "player": "Xavier Hutchinson",
+      "ppg": 1.6981468
+    },
+    {
+      "rank": 171.0,
+      "player": "Kameron Johnson",
+      "ppg": 1.6775692
+    },
+    {
+      "rank": 172.0,
+      "player": "River Cracraft",
+      "ppg": 1.6698297
+    },
+    {
+      "rank": 173.0,
+      "player": "Simi Fehoko",
+      "ppg": 1.6369407
+    },
+    {
+      "rank": 174.0,
+      "player": "Xavier Weaver",
+      "ppg": 1.5978382
+    },
+    {
+      "rank": 175.0,
+      "player": "Jamison Crowder",
+      "ppg": 1.5913415
+    },
+    {
+      "rank": 176.0,
+      "player": "Parris Campbell",
+      "ppg": 1.5879427
+    },
+    {
+      "rank": 177.0,
+      "player": "Laviska Shenault Jr.",
+      "ppg": 1.5735161
+    },
+    {
+      "rank": 178.0,
+      "player": "Tylan Wallace",
+      "ppg": 1.5377809
+    },
+    {
+      "rank": 179.0,
+      "player": "Skyy Moore",
+      "ppg": 1.535022
+    },
+    {
+      "rank": 180.0,
+      "player": "Ben Skowronek",
+      "ppg": 1.5246215
+    },
+    {
+      "rank": 181.0,
+      "player": "Terrace Marshall Jr.",
+      "ppg": 1.5227737
+    },
+    {
+      "rank": 182.0,
+      "player": "Ashton Dulin",
+      "ppg": 1.5226647
+    },
+    {
+      "rank": 183.0,
+      "player": "Scott Miller",
+      "ppg": 1.5046358
+    },
+    {
+      "rank": 184.0,
+      "player": "Malachi Corley",
+      "ppg": 1.4941074
+    },
+    {
+      "rank": 185.0,
+      "player": "Jalen Reagor",
+      "ppg": 1.4746248
+    },
+    {
+      "rank": 186.0,
+      "player": "Ramel Keyton",
+      "ppg": 1.4703505
+    },
+    {
+      "rank": 187.0,
+      "player": "Jermaine Jackson",
+      "ppg": 1.4514836
+    },
+    {
+      "rank": 188.0,
+      "player": "Trent Sherfield",
+      "ppg": 1.4436554
+    },
+    {
+      "rank": 189.0,
+      "player": "Robbie Chosen",
+      "ppg": 1.4260615
+    },
+    {
+      "rank": 190.0,
+      "player": "Treylon Burks",
+      "ppg": 1.424207
+    },
+    {
+      "rank": 191.0,
+      "player": "Velus Jones Jr.",
+      "ppg": 1.400481
+    },
+    {
+      "rank": 192.0,
+      "player": "Deven Thompkins",
+      "ppg": 1.3968498
+    },
+    {
+      "rank": 193.0,
+      "player": "Grant Dubose",
+      "ppg": 1.3927412
+    },
+    {
+      "rank": 194.0,
+      "player": "Casey Washington",
+      "ppg": 1.3877592
+    },
+    {
+      "rank": 195.0,
+      "player": "Ronnie Bell",
+      "ppg": 1.3652884
+    },
+    {
+      "rank": 196.0,
+      "player": "John Ross",
+      "ppg": 1.3622259
+    },
+    {
+      "rank": 197.0,
+      "player": "Tyquan Thornton",
+      "ppg": 1.3548037
+    },
+    {
+      "rank": 198.0,
+      "player": "Alex Bachman",
+      "ppg": 1.3462869
+    },
+    {
+      "rank": 199.0,
+      "player": "Brycen Tremayne",
+      "ppg": 1.3461494
+    },
+    {
+      "rank": 200.0,
+      "player": "DeAndre Carter",
+      "ppg": 1.332191
+    },
+    {
+      "rank": 201.0,
+      "player": "Chris Blair",
+      "ppg": 1.3123178
+    },
+    {
+      "rank": 202.0,
+      "player": "Erik Ezukanma",
+      "ppg": 1.3070415
+    },
+    {
+      "rank": 203.0,
+      "player": "Brenden Rice",
+      "ppg": 1.2855301
+    },
+    {
+      "rank": 204.0,
+      "player": "Britain Covey",
+      "ppg": 1.2843844
+    },
+    {
+      "rank": 205.0,
+      "player": "Tom Kennedy",
+      "ppg": 1.2575684
+    },
+    {
+      "rank": 206.0,
+      "player": "Mason Kinsey",
+      "ppg": 1.2509286
+    },
+    {
+      "rank": 207.0,
+      "player": "Isaiah Williams",
+      "ppg": 1.2507718
+    },
+    {
+      "rank": 208.0,
+      "player": "Brandon Powell",
+      "ppg": 1.2211468
+    },
+    {
+      "rank": 209.0,
+      "player": "Cody White",
+      "ppg": 1.1916072
+    },
+    {
+      "rank": 210.0,
+      "player": "Tyler Scott",
+      "ppg": 1.1778494
+    },
+    {
+      "rank": 211.0,
+      "player": "Jamari Thrash",
+      "ppg": 1.157327
+    },
+    {
+      "rank": 212.0,
+      "player": "Tim Jones",
+      "ppg": 1.1323565
+    },
+    {
+      "rank": 213.0,
+      "player": "Charlie Jones",
+      "ppg": 1.1262219
+    },
+    {
+      "rank": 214.0,
+      "player": "Anthony Gould",
+      "ppg": 1.1246265
+    },
+    {
+      "rank": 215.0,
+      "player": "Jalen Virgil",
+      "ppg": 1.113969
+    },
+    {
+      "rank": 216.0,
+      "player": "Chris Moore",
+      "ppg": 1.0846324
+    },
+    {
+      "rank": 217.0,
+      "player": "Tyreik McAllister",
+      "ppg": 1.0808756
+    },
+    {
+      "rank": 218.0,
+      "player": "Montrell Washington",
+      "ppg": 1.0409503
+    },
+    {
+      "rank": 219.0,
+      "player": "Bryce Ford-Wheaton",
+      "ppg": 1.018953
+    },
+    {
+      "rank": 220.0,
+      "player": "Deonte Harty",
+      "ppg": 1.0163387
+    },
+    {
+      "rank": 221.0,
+      "player": "Chris Conley",
+      "ppg": 1.0118016
+    },
+    {
+      "rank": 222.0,
+      "player": "Equanimeous St. Brown",
+      "ppg": 0.99935895
+    },
+    {
+      "rank": 223.0,
+      "player": "Joshua Cephus",
+      "ppg": 0.99396193
+    },
+    {
+      "rank": 224.0,
+      "player": "Jalen Moreno-Cropper",
+      "ppg": 0.99396193
+    },
+    {
+      "rank": 225.0,
+      "player": "Roman Wilson",
+      "ppg": 0.99396193
+    },
+    {
+      "rank": 226.0,
+      "player": "Ihmir Smith-Marsette",
+      "ppg": 0.9455099
+    },
+    {
+      "rank": 227.0,
+      "player": "Jaylen Johnson",
+      "ppg": 0.9290415
+    },
+    {
+      "rank": 228.0,
+      "player": "Collin Johnson",
+      "ppg": 0.9251996
+    },
+    {
+      "rank": 229.0,
+      "player": "Kaden Davis",
+      "ppg": 0.8927521
+    },
+    {
+      "rank": 230.0,
+      "player": "Brandon Smith",
+      "ppg": 0.8927521
+    },
+    {
+      "rank": 231.0,
+      "player": "Jared Wayne",
+      "ppg": 0.8914739
+    },
+    {
+      "rank": 232.0,
+      "player": "Alex Erickson",
+      "ppg": 0.87491107
+    },
+    {
+      "rank": 233.0,
+      "player": "Dan Chisena",
+      "ppg": 0.86365414
+    },
+    {
+      "rank": 234.0,
+      "player": "Justyn Ross",
+      "ppg": 0.8522164
+    },
+    {
+      "rank": 235.0,
+      "player": "Steven Sims",
+      "ppg": 0.8493839
+    },
+    {
+      "rank": 236.0,
+      "player": "Trishton Jackson",
+      "ppg": 0.81595993
+    },
+    {
+      "rank": 237.0,
+      "player": "Braxton Berrios",
+      "ppg": 0.8031393
+    },
+    {
+      "rank": 238.0,
+      "player": "Marquez Callaway",
+      "ppg": 0.7966006
+    },
+    {
+      "rank": 239.0,
+      "player": "Dez Fitzpatrick",
+      "ppg": 0.79465264
+    },
+    {
+      "rank": 240.0,
+      "player": "Irvin Charles",
+      "ppg": 0.7643351
+    },
+    {
+      "rank": 241.0,
+      "player": "Cody Thompson",
+      "ppg": 0.7592707
+    },
+    {
+      "rank": 242.0,
+      "player": "James Proche",
+      "ppg": 0.7563841
+    },
+    {
+      "rank": 243.0,
+      "player": "Jaelon Darden",
+      "ppg": 0.7553979
+    },
+    {
+      "rank": 244.0,
+      "player": "D'Wayne Eskridge",
+      "ppg": 0.75531507
+    },
+    {
+      "rank": 245.0,
+      "player": "Dareke Young",
+      "ppg": 0.68551654
+    },
+    {
+      "rank": 246.0,
+      "player": "Elijah Cooks",
+      "ppg": 0.6623645
+    },
+    {
+      "rank": 247.0,
+      "player": "Laquon Treadwell",
+      "ppg": 0.6622448
+    },
+    {
+      "rank": 248.0,
+      "player": "Trent Taylor",
+      "ppg": 0.6597783
+    },
+    {
+      "rank": 249.0,
+      "player": "Maurice Alexander",
+      "ppg": 0.64834213
+    },
+    {
+      "rank": 250.0,
+      "player": "Zach Pascal",
+      "ppg": 0.5659283
+    }
+  ]
+}
