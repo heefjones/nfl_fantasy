@@ -1,0 +1,57 @@
+body {
+    font-family: sans-serif;
+    padding: 2rem;
+    background: #fafafa;
+  }
+  
+  /* center the table and size to content */
+  table {
+    border-collapse: collapse;
+    margin: 1rem auto;            /* center horizontally */
+    table-layout: auto;           /* default – size columns to content */
+    width: auto;                  /* don’t stretch to 100% */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;             /* round the corners cleanly */
+  }
+  
+  thead {
+    background-color: #f5f5f5;
+  }
+  
+  th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    white-space: nowrap;          /* no wrapping, so columns fit their widest cell */
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  /* optional: round top and bottom corners */
+  th:first-child {
+    border-top-left-radius: 8px;
+  }
+  th:last-child {
+    border-top-right-radius: 8px;
+  }
+  tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+  }
+  tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  
+  /* subtle hover effect */
+  tbody tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  /* style the <select> to match */
+  select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+  }
+  
