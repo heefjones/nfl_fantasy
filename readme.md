@@ -33,7 +33,7 @@ General NFL data was first extracted from [Pro Football Reference](https://www.p
   - **WR/TE**: 2.52
 
 ## 2025 Rankings
-Finally, the model was trained on all data (2006-2023), using the 2024 data to predict 2025 fantasy PPG. 👉 [View the interactive 2025 PPG rankings](https://<your-username>.github.io/nfl_fantasy/)
+Finally, the model was trained on all data (2006-2023), using the 2024 data to predict 2025 fantasy PPG. 👉 [View the interactive 2025 PPG rankings](https://heefjones.github.io/nfl_fantasy)
 
 
 ## Files
