@@ -19,8 +19,8 @@ General NFL data was first extracted from [Pro Football Reference](https://www.p
 3 position-specific XGBoost models (QB, RB, WR/TE) were trained on the 2006–2022 data, using the 2023 data as a holdout test set to predict 2024 fantasy PPG.
 
 - **Model:** XGBoost
-- **Input:** Last season stats + 3-year & career summary stats + trend slope + momentum
-- **Target:** Next season fantasy PPG
+- **Input:** Last-season stats + 3-year & career summary stats + trend slope + momentum
+- **Target:** Next-season fantasy PPG
 - **Tuning:** Bayesian optimization
 - **Validation:** 5‑fold K‑Fold
 - **RMSE:**
