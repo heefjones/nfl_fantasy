@@ -2,16 +2,16 @@
 Predicting fantasy performance for players in the 2025 season.
 
 ## Data
-I've posted a clean NFL fantasy dataset [here](https://www.kaggle.com/datasets/heefjones/nfl-fantasy-data-1970-2024). Feel free to download and use for projections.
+General NFL data was first extracted from [Pro Football Reference](https://www.pro-football-reference.com), then advanced metrics were acquired via [Pro Football Focus](https://www.pff.com). I've posted a clean version of the PFR data [here](https://www.kaggle.com/datasets/heefjones/nfl-fantasy-data-1970-2024). Feel free to download and use for projections.
 
-### [Pro Football Reference](https://www.pro-football-reference.com)
+### PFR
 - **Records:**
   - 55 seasons (1970–2024)
   - 30k rows
 - **Features:**
   - Yards, TDs, attempts (passing/rushing/receiving)
 
- ### [Pro Football Focus](https://www.pff.com)
+ ### PFF
 - **Records:**
   - 19 seasons (2006–2024)
   - 12k rows
