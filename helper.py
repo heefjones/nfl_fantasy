@@ -17,6 +17,7 @@ from bayes_opt import BayesianOptimization
 # system
 import os
 import gc
+from functools import reduce
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -116,7 +117,7 @@ def load_data(path, pff=False):
         
         # get year from filename and add as column
         year = file_path[-8:-4]
-        data['Year'] = int(year)
+        data['year'] = int(year)
         
         # add df to the list
         dfs.append(data)
@@ -129,7 +130,50 @@ def load_data(path, pff=False):
         # drop rank/point columns (we will be recalculating these)
         df = df.drop(columns=['Rk', 'FantPt', 'PPR', 'DKPt', 'FDPt', 'VBD', 'PosRank', 'OvRank'])
 
+        # replace 3-letter team codes with 2-letter codes
+        team_map = {'GNB': 'GB', 'KAN': 'KC', 'LVR': 'LV', 'NWE': 'NE', 'NOR': 'NO', 'SFO': 'SF', 'TAM': 'TB'}
+        df['Tm'] = df['Tm'].replace(team_map)
+
     return df
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def clean_names(df):
+    # lowercase the player col
+    df['player'] = df['player'].str.lower()
+
+    # remove punctuation
+    df['player'] = df['player'].str.replace(r"[.\-']", '', regex=True)
+    
+    # remove sirnames
+    df['player'] = df['player'].str.replace(r'\b(jr|sr|ii|iii|iv|v)\b', '', regex=True)
+
+    # replace all 'joshua' -> 'josh',  'mitch' -> 'mitchell', 'ben' -> 'benjamin', 'gabe' -> 'gabriel', dave' -> 'david'
+    for name_pair in [('joshua', 'josh'), ('mitch', 'mitchell'), ('ben', 'benjamin'), ('gabe', 'gabriel'), ('dave', 'david')]:
+        df['player'] = df['player'].str.replace(name_pair[0] + ' ', name_pair[1] + ' ', regex=False)
+
+    # remove trailing spaces
+    df['player'] = df['player'].str.strip()
+
+    # rename players
+    df.loc[df['player'] == 'marquise brown', 'player'] = 'hollywood brown'
+    df.loc[df['player'] == 'chigoziem okonkwo', 'player'] = 'chig okonkwo'
+    df.loc[df['player'] == 'stevie johnson', 'player'] = 'steve johnson'
+    return df
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def show_duplicates(df, subset):
+    """
+    Show duplicates in the DataFrame.
+    """
+
+    # identify duplicates
+    dup = df[df.duplicated(subset=subset, keep=False)]
+
+    # show
+    print(f'Number of duplicate rows: {dup.shape[0]}')
+    display(dup[subset + ['team']].sort_values('year').T)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -156,11 +200,11 @@ def show_shape_and_nulls(df):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def fill_experience(group):
-    # add 'Key' back manually
-    group['Key'] = group.name
+    # add 'key' back manually
+    group['key'] = group.name
 
     # get first experience value for a player
-    first_exp = group['Exp'].iloc[0]
+    first_exp = group['exp'].iloc[0]
     
     # if value is null, set to 0 (rookie season)
     if pd.isna(first_exp):
@@ -168,7 +212,7 @@ def fill_experience(group):
     
     # define range of years to fill each player's experience column
     experience = range(int(first_exp), int(first_exp) + len(group))
-    group['Exp'] = list(experience)
+    group['exp'] = list(experience)
     return group
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -179,7 +223,7 @@ def add_point_cols(df, points_type):
 
     Args:
     - df (pd.DataFrame): The dataframe to add point columns to.
-    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing td).
 
     Returns:
     - df (pd.DataFrame): The dataframe with point column added.
@@ -189,31 +233,31 @@ def add_point_cols(df, points_type):
     if points_type not in ['standard', 'half-ppr', 'ppr', '6']:
         raise ValueError("Invalid points_type type. Choose from 'standard', 'half-ppr', 'ppr', or '6'.")
 
-    # calculate standard points_type (excluding passing TDs)
-    standard_points = (df['Pass_Yds'] * 0.04) + (df['Pass_Int'] * -1) + (df['Rush_Yds'] * 0.1) + \
-        (df['Rush_TD'] * 6) + (df['Rec_Yds'] * 0.1) + (df['Rec_TD'] * 6) + (df['FmbLost'] * -2)
+    # calculate standard points_type (excluding passing tds)
+    standard_points = (df['pass_yds'] * 0.04) + (df['pass_int'] * -1) + (df['rush_yds'] * 0.1) + \
+        (df['rush_td'] * 6) + (df['rec_yds'] * 0.1) + (df['rec_td'] * 6) + (df['fmb_lost'] * -2)
 
     # standard points
     if points_type == 'standard':
-        df['Points_standard'] = standard_points + (df['Pass_TD'] * 4)
+        df['points_standard'] = standard_points + (df['pass_td'] * 4)
         
     # half-ppr    
     elif points_type == 'half-ppr':
-        df['Points_half-ppr'] = standard_points + (df['Pass_TD'] * 4) + (df['Rec_Rec'] * 0.5)
+        df['points_half-ppr'] = standard_points + (df['pass_td'] * 4) + (df['rec_rec'] * 0.5)
 
     # ppr    
     elif points_type == 'ppr':
-        df['Points_ppr'] = standard_points + (df['Pass_TD'] * 4) + (df['Rec_Rec'] * 1)
+        df['points_ppr'] = standard_points + (df['pass_td'] * 4) + (df['rec_rec'] * 1)
 
-    # PPR scoring with 6pt passing TDs
+    # PPR scoring with 6pt passing tds
     elif points_type == '6':
-        df['Points_6'] = standard_points + (df['Pass_TD'] * 6) + (df['Rec_Rec'] * 1)
+        df['points_6'] = standard_points + (df['pass_td'] * 6) + (df['rec_rec'] * 1)
 
     # point-per-game column
-    df['PPG_' + points_type] = (df['Points_' + points_type] / df['G']).fillna(0)
+    df['ppg_' + points_type] = (df['points_' + points_type] / df['g']).fillna(0)
 
     # point-per-touch column
-    df['PPT_' + points_type] = (df['Points_' + points_type] / df['Touches']).fillna(0)
+    df['ppt_' + points_type] = (df['points_' + points_type] / df['touches']).fillna(0)
 
     return df
 
@@ -221,37 +265,37 @@ def add_point_cols(df, points_type):
 
 def add_rank_cols(df, points_type):
     """
-    Extract the points column from df and add total Points, PPG, and PPT rank columns to df.
+    Extract the points column from df and add total points, ppg, and ppt rank columns to df.
 
     Args:
     - df (pd.DataFrame): DataFrame containing player data.
-    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing td).
 
     Returns:
     - pd.DataFrame: DataFrame with added rank columns.
     """
 
     # some groups we will be using
-    year_groups = df.groupby('Year')
-    pos_groups = df.groupby(['Year', 'Pos'])
+    year_groups = df.groupby('year')
+    pos_groups = df.groupby(['year', 'pos'])
     
     # create mapping for each metric and corresponding grouping
-    metrics = ['Points', 'PPG', 'PPT']
+    metrics = ['points', 'ppg', 'ppt']
     metric_to_group = {}
     for metric in metrics:
-        metric_to_group[f'{metric}OvrRank_{points_type}'] = year_groups
-        metric_to_group[f'{metric}PosRank_{points_type}'] = pos_groups
+        metric_to_group[f'{metric}_ovr_rank_{points_type}'] = year_groups
+        metric_to_group[f'{metric}_pos_rank_{points_type}'] = pos_groups
     
     # iterate over each rank column, compute the ranking, and assign to df
     for rank_col, group in metric_to_group.items():
         # determine the base metric by removing the rank part from the rank column name
-        if 'OvrRank' in rank_col:
-            base_metric = rank_col.replace(f'OvrRank_{points_type}', '')
-        elif 'PosRank' in rank_col:
-            base_metric = rank_col.replace(f'PosRank_{points_type}', '')
+        if 'ovr_rank' in rank_col:
+            base_metric = rank_col.replace(f'ovr_rank_{points_type}', '')
+        elif 'pos_rank' in rank_col:
+            base_metric = rank_col.replace(f'pos_rank_{points_type}', '')
         
         # construct the source column name
-        source_col = f"{base_metric}_{points_type}"
+        source_col = f"{base_metric}{points_type}"
 
         # compute rank
         df[rank_col] = group[source_col].transform(lambda x: x.rank(ascending=False, method='min')).astype(int)
@@ -262,26 +306,26 @@ def add_rank_cols(df, points_type):
 
 def add_vorp_cols(df, points_type, num_teams=12, wr3=True):
     """
-    Add VORP columns to the dataframe using the default Underdog fantasy lineup (12 teams, 3 WRs).
+    Add vorp columns to the dataframe using the default Underdog fantasy lineup (12 teams, 3 WRs).
 
     Args:
     - df (pd.DataFrame): The dataframe containing player data.
-    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing td).
     - num_teams (int): The number of teams in the league.
     - wr3 (bool): Whether to include a 3rd WR in the lineup. If false, a 2WR format is implied.
 
     Returns:
-    - df (pd.DataFrame): The dataframe with VORP columns added.
+    - df (pd.DataFrame): The dataframe with vorp columns added.
     """
 
     # define the replacement rank based on num teams and 3WR format
     replacement_ranks = {'QB': num_teams, 'RB': int(num_teams * 2.5), 'WR': int(num_teams * 2.5 + True), 'TE': num_teams}
 
     # iterate through the position groups
-    for (year, pos), group in df.groupby(['Year', 'Pos']):
+    for (year, pos), group in df.groupby(['year', 'pos']):
 
-        # iterate for both season total and PPG VORP
-        for rank_type in ['Points', 'PPG']:
+        # iterate for both season total and ppg vorp
+        for rank_type in ['points', 'ppg']:
 
             # get the replacement rank for the current position, subtract 1 to get the index
             rank = int(replacement_ranks[pos] - 1)
@@ -295,9 +339,9 @@ def add_vorp_cols(df, points_type, num_teams=12, wr3=True):
             # get replacement player points for the current position and scoring type
             replacement = group.iloc[rank][col_name]
 
-            # add VORP column
-            df.loc[(df['Year'] == year) & (df['Pos'] == pos), rank_type + '_VORP_' + points_type] = \
-            df.loc[(df['Year'] == year) & (df['Pos'] == pos), col_name] - replacement
+            # add vorp column
+            df.loc[(df['year'] == year) & (df['pos'] == pos), rank_type + '_vorp_' + points_type] = \
+            df.loc[(df['year'] == year) & (df['pos'] == pos), col_name] - replacement
 
     return df
 
@@ -305,21 +349,57 @@ def add_vorp_cols(df, points_type, num_teams=12, wr3=True):
 
 def add_target_cols(df, points_type):
     """
-    Add Total and PPG target columns to the dataframe.
+    Add Total and ppg target columns to the dataframe.
 
     Args:
     - df (pd.DataFrame): The dataframe containing player data.
-    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing TD).
+    - points_type (str): The type of point system to use (standard, half-ppr, ppr, 6pt passing td).
 
     Returns:
     - df (pd.DataFrame): The dataframe with target columns added.
     """
 
     # group by each player and shift the points column by 1
-    df['PointsTarget_' + points_type] = df.groupby('Key')['Points_' + points_type].shift(-1)
-    df['PPGTarget_' + points_type] = df.groupby('Key')['PPG_' + points_type].shift(-1)
+    df['points_target_' + points_type] = df.groupby('key')['points_' + points_type].shift(-1)
+    df['ppg_target_' + points_type] = df.groupby('key')['ppg_' + points_type].shift(-1)
 
     return df
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def clean_rankings(rankings):
+    # combine firstName and lastName
+    rankings['player'] = rankings['firstName'] + ' ' + rankings['lastName']
+
+    # drop cols
+    rankings = rankings.drop(columns=['id', 'firstName', 'lastName', 'slotName', 'lineupStatus'])
+
+    # clean player names
+    rankings = clean_names(rankings)
+
+    # remove pos from positionRank
+    rankings['positionRank'] = rankings['positionRank'].str[2:]
+
+    # rename positionRank
+    rankings = rankings.rename(columns={'positionRank': 'adp_rank_2025'})
+
+    # drop unranked players
+    rankings = rankings[rankings['adp_rank_2025'].notnull()]
+
+    # cast adp_rank_2025 to int
+    rankings['adp_rank_2025'] = rankings['adp_rank_2025'].astype(int)
+
+    # remove "." and " Jr" from player col
+    rankings['player'] = rankings['player'].str.replace('.', '', regex=False).str.replace(' Jr', '', regex=False)
+
+    # map teamName col to abbreviations
+    rankings['teamName'] = rankings['teamName'].map(TEAM_NAMES)
+
+    # add year col
+    rankings['year'] = 2024
+
+    # sort by rank
+    return rankings.sort_values(by='adp_rank_2025', ascending=True).reset_index(drop=True)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -359,121 +439,127 @@ def prefix_df(df, prefix):
     # rename all columns with prefix
     df.columns = [f'{prefix}_{col}' for col in df.columns]
 
-    # restore Player and Year columns
-    df['Player'] = df[f'{prefix}_player']
-    df['Year'] = df[f'{prefix}_Year']
+    # restore player and year columns
+    df['player'] = df[f'{prefix}_player']
+    df['year'] = df[f'{prefix}_year']
 
-    # drop prefixed Player and Year
-    return df.drop([f'{prefix}_player', f'{prefix}_Year'], axis=1)
+    # drop prefixed player and year
+    return df.drop([f'{prefix}_player', f'{prefix}_year'], axis=1)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def clean_pff_player_data(pff_data, prefix):
+def clean_pff_player_data(df, prefix):
     """
     Clean PFF player data by normalizing certain columns and dropping unnecessary ones.
 
     Args:
-    - pff_data (pd.DataFrame): The PFF data to clean.
+    - df (pd.DataFrame): The PFF data to clean.
     - prefix (str): The prefix to add to the columns.
 
     Returns:
-    - pff_data (pd.DataFrame): The cleaned PFF data.
+    - df (pd.DataFrame): The cleaned PFF data.
     """
 
-    # passing data
-    if prefix == 'Pass':
-        formulas = {'Dropback%': ('dropbacks', 'passing_snaps'), 
-                    'Aimed_passes%': ('aimed_passes', 'attempts'), 
-                    'Dropped_passes%': ('drops', 'aimed_passes'), 
-                    'Batted_passes%': ('bats', 'aimed_passes'), 
-                    'Thrown_away%': ('thrown_aways', 'passing_snaps'), 
-                    'Pressure%': ('def_gen_pressures', 'passing_snaps'), 
-                    'Scramble%': ('scrambles', 'passing_snaps'), 
-                    'Sack%': ('sacks', 'passing_snaps'), 
-                    'Pressure_to_sack%': ('sacks', 'def_gen_pressures'), 
-                    'BTT%': ('big_time_throws', 'aimed_passes'), 
-                    'TWP%': ('turnover_worthy_plays', 'aimed_passes'), 
-                    'First_down%': ('first_downs', 'attempts')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'bats', 'big_time_throws', 'btt_rate', 'completion_percent', 
-             'completions', 'declined_penalties', 'drop_rate', 'drops', 'grades_run', 'franchise_id', 
-             'interceptions', 'penalties', 'pressure_to_sack_rate', 'qb_rating', 'sack_percent', 'scrambles', 'spikes', 'thrown_aways', 
-             'touchdowns', 'turnover_worthy_plays', 'twp_rate', 'yards', 'ypa', 'first_downs', 'attempts']
+    # passing
+    if prefix == 'pass':
+        formulas = {'dropback_pct': ('dropbacks', 'passing_snaps'), 
+                    'aimed_passes_pct': ('aimed_passes', 'attempts'), 
+                    'dropped_passes_pct': ('drops', 'aimed_passes'), 
+                    'batted_passes_pct': ('bats', 'aimed_passes'), 
+                    'thrown_away_pct': ('thrown_aways', 'passing_snaps'), 
+                    'pressure_pct': ('def_gen_pressures', 'passing_snaps'), 
+                    'scramble_pct': ('scrambles', 'passing_snaps'), 
+                    'sack%': ('sacks', 'passing_snaps'), 
+                    'pressure_to_sack%': ('sacks', 'def_gen_pressures'), 
+                    'btt_pct': ('big_time_throws', 'aimed_passes'), 
+                    'twp_pct': ('turnover_worthy_plays', 'aimed_passes'), 
+                    'first_down_pct': ('first_downs', 'attempts')}
     
-    # rushing data
-    elif prefix == 'Rush':
-        formulas = {'Team_Rush%': ('attempts', 'run_plays'), 
-                    'Avoided_tackles_per_attempt': ('avoided_tackles', 'attempts'), 
-                    '10+_yard_run%': ('explosive', 'attempts'), 
-                    '15+_yard_run%': ('breakaway_attempts', 'attempts'), 
-                    '15+_yard_run_yards%': ('breakaway_yards', 'yards'), 
-                    'First_down%': ('first_downs', 'attempts'), 
-                    'Gap%': ('gap_attempts', 'attempts'), 
-                    'Zone%': ('zone_attempts', 'attempts'), 
-                    'YCO_per_attempt': ('yards_after_contact', 'attempts')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 
-             'declined_penalties', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'first_downs', 'franchise_id', 'fumbles', 
-             'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run_block', 'penalties', 'rec_yards', 'receptions', 
-             'routes', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'attempts', 'run_plays']
+    # rushing
+    elif prefix == 'rush':
+        formulas = {'team_rush_pct': ('attempts', 'run_plays'), 
+                    'avoided_tackles_per_attempt': ('avoided_tackles', 'attempts'), 
+                    '10_yard_run_pct': ('explosive', 'attempts'), 
+                    '15_yard_run_pct': ('breakaway_attempts', 'attempts'), 
+                    '15_yard_run_yards_pct': ('breakaway_yards', 'yards'), 
+                    'first_down_pct': ('first_downs', 'attempts'), 
+                    'gap_pct': ('gap_attempts', 'attempts'), 
+                    'zone_pct': ('zone_attempts', 'attempts'), 
+                    'yds_contact/a': ('yards_after_contact', 'attempts')}
     
-    # receiving data
-    elif prefix == 'Rec':
-        formulas = {'Avoided_tackles_per_reception': ('avoided_tackles', 'receptions'), 
-                    'First_down%': ('first_downs', 'receptions'), 
-                    'Int_per_target': ('interceptions', 'targets'), 
-                    'YAC%': ('yards_after_catch', 'yards'), 
-                    'Contested_catch_rate': ('contested_receptions', 'contested_targets')}
-        cols_to_drop = ['player_id', 'position', 'team_name', 'player_game_count', 'declined_penalties', 'drops', 'first_downs', 'franchise_id', 'fumbles', 
-                        'grades_pass_block', 'pass_blocks', 'pass_plays', 'penalties', 'receptions', 'targets', 'touchdowns', 'yards', 'yards_after_catch', 'interceptions']
+    # receiving
+    elif prefix == 'rec':
+        formulas = {'avoided_tackles/r': ('avoided_tackles', 'receptions'), 
+                    'first_down_pct': ('first_downs', 'receptions'), 
+                    'int_per_target': ('interceptions', 'targets'), 
+                    'yac_pct': ('yards_after_catch', 'yards'), 
+                    'contested_pct': ('contested_targets', 'targets'),
+                    'contested_catch_pct': ('contested_receptions', 'contested_targets')}
 
     # normalize
-    pff_data = add_percent_columns(pff_data, formulas)
+    df = add_percent_columns(df, formulas)
 
     # drop columns
-    pff_data = pff_data.drop(columns=cols_to_drop)
+    df = df.drop(columns=['player_id', 'position', 'player_game_count', 'declined_penalties', 'penalties', 'drops', 'franchise_id', 'touchdowns', 'yards'])
 
     # add prefix
-    pff_data = prefix_df(pff_data, prefix)
+    df = prefix_df(df, prefix)
 
-    return pff_data.fillna(0)
+    # fix team col
+    df['team'] = df[f'{prefix}_team_name']
+    df = df.drop(columns=[f'{prefix}_team_name'])
+
+    # clean player names
+    df = clean_names(df)
+
+    return df.fillna(0)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def clean_pff_team_data(pff_data):
+def clean_pff_team_data(df):
     """
     Clean PFF team data by normalizing certain columns and dropping unnecessary ones.
 
     Args:
-    - pff_data (pd.DataFrame): The PFF data to clean.
+    - df (pd.DataFrame): The PFF data to clean.
 
     Returns:
-    - pff_data (pd.DataFrame): The cleaned PFF data.
+    - df (pd.DataFrame): The cleaned PFF data.
     """
 
-    # add 'Win%' col
-    pff_data['Win%'] = pff_data['Wins'] / (pff_data['Wins'] + pff_data['Losses'])
+    # calculate games played
+    games_played = df['Wins'] + df['Losses']
 
-    # calculate PPG and PPG allowed
-    pff_data['PPG'] = pff_data['Points For'] / (pff_data['Wins'] + pff_data['Losses'])
-    pff_data['PPG_allowed'] = pff_data['Points Against'] / (pff_data['Wins'] + pff_data['Losses'])
+    # add win %
+    df['win_pct'] = df['Wins'] / games_played
 
-    # create 'Pass Defense Grade' col as average of 'Pass Rush' and 'Pass Coverage' grades
-    pff_data['Pass Defense Grade'] = ((pff_data['Pass Rush Grade'] + pff_data['Coverage Grade'])) / 2
+    # calculate ppg and ppg against
+    df['ppg'] = df['Points For'] / games_played
+    df['ppga'] = df['Points Against'] / games_played
 
-    # add 'Team' to the beginning of each column name
-    pff_data.columns = ['Team_' + col for col in pff_data.columns]
+    # create 'pass defense grade' col as average of 'pass rush' and 'pass coverage' grades
+    df['pass_def_grade'] = ((df['Pass Rush Grade'] + df['Coverage Grade'])) / 2
 
-    # remove 'Team' from 'Tm' and 'Year'
-    pff_data['Tm'] = pff_data['Team_Tm']
-    pff_data['Year'] = pff_data['Team_Year']
+    # fix team col
+    df['team'] = df['Tm']
 
     # drop columns
-    return pff_data.drop(columns=['Team_Tm', 'Team_Year', 'Team_Points For', 'Team_Points Against', 'Team_Wins', 'Team_Losses']).fillna(0)
+    df = df.drop(columns=['Tm', 'Points For', 'Points Against', 'Wins', 'Losses'])
+
+    # add 'team' to the beginning of each column name
+    df.columns = ['team_' + col if col not in ['team', 'year'] else col for col in df.columns]
+
+    # lowercase and replace spaces with underscores
+    df.columns = df.columns.str.lower().str.replace(' ', '_')
+
+    # fill nulls
+    return df.fillna(0)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def consolidate_pos_columns(df, col_name):
     """
-    Consolidate duplicate columns like 'Pass_X', 'Rush_X', 'Rec_X' into a single column
+    Consolidate duplicate columns like 'pass_X', 'rush_X', 'rec_X' into a single column
     based on player position.
 
     Args:
@@ -485,15 +571,42 @@ def consolidate_pos_columns(df, col_name):
     """
 
     # get column names
-    pass_col, rush_col, rec_col = f'Pass_{col_name}', f'Rush_{col_name}', f'Rec_{col_name}'
+    pass_col, rush_col, rec_col = f'pass_{col_name}', f'rush_{col_name}', f'rec_{col_name}'
 
     # map positional conditions to the correct column 
-    conditions = [df['Pos'] == 'QB', df['Pos'] == 'RB', df['Pos'].isin(['WR', 'TE'])]
+    conditions = [df['pos'] == 'QB', df['pos'] == 'RB', df['pos'].isin(['WR', 'TE'])]
     choices = [df[pass_col], df[rush_col], df[rec_col]]
     df[col_name] = np.select(conditions, choices, default=np.nan)
 
     # drop the original columns
     return df.drop([pass_col, rush_col, rec_col], axis=1)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+# eda.ipynb
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+def plot_heatmap(data, title):
+    # Compute the correlation between positions for each team and year
+    correlations = data.corr()
+
+    # only keep the upper triangle of the correlation matrix
+    mask = np.tril(np.ones_like(correlations, dtype=bool))
+    correlations = correlations.mask(mask)
+
+    # Plot a heatmap of the correlation matrix
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(correlations, annot=True, fmt=".2f", cmap='coolwarm', center=0)
+    plt.title(title)
+    plt.show()
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -515,9 +628,9 @@ def drop_total_volume_cols(df):
     """
 
     # drop non-normalized columns and a few redundant normalized columns
-    dropped_cols = ['G', 'GS', 'ProBowl', 'AllPro', 'Pass_Cmp', 'Pass_Att', 'Pass_Yds', 'Pass_TD', 'Pass_Int', 'Rush_Att', 'Rush_Yds', 'Rush_TD', 'Pass_Cmp%', 'Rec_Catch%', 'num_games', 'Touches', 
-                'Rec_Tgt', 'Rec_Rec', 'Rec_Yds', 'Rec_TD', 'Fmb', 'FmbLost', 'Scrim_TD', 'Scrim_Yds', 'Rush_Y/A', 'Rec_Y/R', 'Pass_Y/A', 
-                'Points_half-ppr', 'PointsOvrRank_half-ppr', 'PointsPosRank_half-ppr', 'Points_VORP_half-ppr', 'PointsTarget_half-ppr', 'PPG_VORP_half-ppr']
+    dropped_cols = ['G', 'GS', 'ProBowl', 'AllPro', 'pass_Cmp', 'pass_Att', 'pass_yds', 'pass_td', 'pass_int', 'rush_Att', 'rush_yds', 'rush_td', 'pass_Cmp%', 'rec_Catch%', 'num_games', 'Touches', 
+                'rec_Tgt', 'rec_rec', 'rec_yds', 'rec_td', 'Fmb', 'FmbLost', 'Scrim_td', 'Scrim_yds', 'rush_Y/A', 'rec_Y/R', 'pass_Y/A', 
+                'points_half-ppr', 'points_ovr_rank_half-ppr', 'points_pos_rank_half-ppr', 'points_vorp_half-ppr', 'points_target_half-ppr', 'ppg_vorp_half-ppr']
     return df.drop(columns=dropped_cols)
 
 
@@ -528,20 +641,20 @@ def create_features(df):
     Create features for each player.
 
     Args:
-    - df (pd.dataframe): Player data.
+    - df (pd.dataframe): player data.
 
     Returns:
     - (pl.dataframe): Dataframe with new features added.
     """
 
     # convert to polars dataframe and sort
-    df = pl.from_pandas(df).sort(["Key", "Year"])
+    df = pl.from_pandas(df).sort(["key", "year"])
 
     # convert to a lazy frame for efficiency
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'Age', 'Exp', 'target']
+    non_agg_cols = ['player', 'Tm', 'pos', 'key', 'year', 'Age', 'Exp', 'target']
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
     # list of expressions for original columns
@@ -557,27 +670,27 @@ def create_features(df):
             base_exprs.extend([
                 pl.col(col)
                 .rolling_mean(window_size=n, min_samples=1)
-                .over('Key')
+                .over('key')
                 .alias(f'{col}_{n}y_mean'),
                 pl.col(col)
                 .rolling_std(window_size=n, min_samples=1)
-                .over('Key')
+                .over('key')
                 .alias(f'{col}_{n}y_std')])
 
         # cumulative career mean & std
-        cum_sum = pl.col(col).cum_sum().over('Key')
+        cum_sum = pl.col(col).cum_sum().over('key')
         cum_count = (pl.col('Exp') + 1)
         cum_mean = (cum_sum / cum_count).alias(f'{col}_career_mean')
-        sum_sq = pl.col(col).pow(2).cum_sum().over('Key')
+        sum_sq = pl.col(col).pow(2).cum_sum().over('key')
         cum_var = ((sum_sq - cum_sum.pow(2) / cum_count) / cum_count)
         cum_std = cum_var.sqrt().alias(f'{col}_career_std')
         base_exprs.extend([cum_mean, cum_std])
 
         # trend slope relative to career (expanding linear regression)
-        sum_year = pl.col('Year').cum_sum().over('Key')
-        sum_year_sq = pl.col('Year').pow(2).cum_sum().over('Key')
+        sum_year = pl.col('year').cum_sum().over('key')
+        sum_year_sq = pl.col('year').pow(2).cum_sum().over('key')
         sum_y = cum_sum
-        sum_xy = (pl.col(col) * pl.col('Year')).cum_sum().over('Key')
+        sum_xy = (pl.col(col) * pl.col('year')).cum_sum().over('key')
         x_mean = (sum_year / cum_count)
         y_mean = (sum_y / cum_count)
         cov = (sum_xy / cum_count) - (x_mean * y_mean)
@@ -618,20 +731,22 @@ def get_pos_subsets(features):
     """
 
     # create the 4 positional subsets
-    qb = features.query('Pos == "QB"')
-    rb = features.query('Pos == "RB"')
-    wr_te = features.query('Pos == "WR" or Pos == "TE"')
+    qb = features.query('pos == "QB"')
+    rb = features.query('pos == "RB"')
+    wr = features.query('pos == "WR"')
+    te = features.query('pos == "TE"')
 
-    # drop 'Rec' cols for QBs
-    rec_cols = [col for col in features.columns if col.startswith('Rec_')]
+    # drop 'rec' cols for QBs
+    rec_cols = [col for col in features.columns if col.startswith('rec_')]
     qb = qb.drop(columns=rec_cols)
 
-    # drop 'Pass' cols for RBs and WRs/TEs
-    pass_cols = [col for col in features.columns if col.startswith('Pass_')]
+    # drop 'pass' cols for RBs and WRs/TEs
+    pass_cols = [col for col in features.columns if col.startswith('pass_')]
     rb = rb.drop(columns=pass_cols)
-    wr_te = wr_te.drop(columns=pass_cols)
+    wr = wr.drop(columns=pass_cols)
+    te = te.drop(columns=pass_cols)
 
-    return qb, rb, wr_te
+    return qb, rb, wr, te
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -649,7 +764,7 @@ def cross_val(df, estimator, folds=5):
     """
 
     # non-feature cols
-    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'target']
+    non_feat_cols = ['player', 'pos', 'Tm', 'key', 'year', 'target']
 
     # define X and y
     X = df.drop(non_feat_cols, axis=1)
@@ -682,7 +797,7 @@ def get_X_y(pos_subset):
     """
 
     # non-feature cols
-    non_feat_cols = ['Player', 'Pos', 'Tm', 'Key', 'Year', 'target']
+    non_feat_cols = ['player', 'pos', 'Tm', 'key', 'year', 'target']
 
     # define X and y
     X = pos_subset.drop(non_feat_cols, axis=1)
@@ -727,7 +842,7 @@ def xgb_cross_val(max_depth, learning_rate, gamma, subsample, colsample_bytree, 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def run_bayes_opt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=2):
+def run_bayes_opt(X, y, param_bounds, seed, init_points=5, n_iter=20, verbose=2):
     """
     Run BayesianOptimization on xgb_cross_val for one (X, y) dataset.
 
@@ -762,6 +877,21 @@ def run_bayes_opt(X, y, param_bounds, seed, init_points=10, n_iter=100, verbose=
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+def get_xgb_model(params):
+    """
+    Create an XGBoost model with the given parameters.
+
+    Args:
+    - params (dict): Dictionary of parameters for the XGBoost model.
+
+    Returns:
+    - model (XGBRegressor): Configured XGBoost model.
+    """
+
+    return XGBRegressor(**params, n_estimators=1000, random_state=SEED, n_jobs=-1)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 def get_2024_preds(df, model):
     """
     Train model on all data prior to 2023 and use 2023 data to predict 2024 results.
@@ -775,8 +905,8 @@ def get_2024_preds(df, model):
     """
 
     # get training data (before 2023) and test data (2023)
-    X_train, y_train = get_X_y(df.query('Year < 2023'))
-    X_test, y_test = get_X_y(df.query('Year == 2023'))
+    X_train, y_train = get_X_y(df.query('year < 2023'))
+    X_test, y_test = get_X_y(df.query('year == 2023'))
 
     # train model
     model.fit(X_train, y_train)
@@ -792,8 +922,8 @@ def get_2024_preds(df, model):
     print()
 
     # create a df for our predictions
-    preds_df = pd.DataFrame(data={'player': df.query('Year == 2023')['Player'].values, 'team': df.query('Year == 2023')['Tm'].values, 
-                              'y_true': y_test, 'y_pred': y_pred, 'error': (y_pred - y_test), 'pos': df.query('Year == 2023')['Pos'].values})
+    preds_df = pd.DataFrame(data={'player': df.query('year == 2023')['player'].values, 'team': df.query('year == 2023')['Tm'].values, 
+                              'y_true': y_test, 'y_pred': y_pred, 'error': (y_pred - y_test), 'pos': df.query('year == 2023')['pos'].values})
     
     # map colors to our preds_df, fill nans with gray
     preds_df['team_color'] = preds_df['team'].map(TEAM_COLORS).fillna('gray')
@@ -803,12 +933,13 @@ def get_2024_preds(df, model):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def plot_2024_preds(preds_df):
+def plot_2024_preds(preds_df, pos):
     """
     Visualize the model's predictions against the true values.
 
     Args:
     - preds_df (pd.DataFrame): DataFrame containing the model's predictions and true values.
+    - pos (str): position group (e.g., 'QB', 'RB', 'WR', 'TE').
 
     Returns:
     - None
@@ -818,9 +949,9 @@ def plot_2024_preds(preds_df):
     plt.figure(figsize=(14, 8))
 
     # title, labels
-    plt.title('2024 Fantasy PPG Predictions', fontsize=22)
-    plt.xlabel('True PPG', fontsize=22)
-    plt.ylabel('Predicted PPG', fontsize=22)
+    plt.title(f'2024 Predictions: {pos}', fontsize=24)
+    plt.xlabel('True ppg', fontsize=22)
+    plt.ylabel('Predicted ppg', fontsize=22)
 
     # define full palette
     full_palette = {'QB': '#1f39a6', 'RB': '#B22222', 'WR': '#9B30FF', 'TE': '#708090'}
@@ -875,7 +1006,7 @@ def get_2025_preds(df, model):
     y_pred = model.predict(X)
 
     # create a df for our predictions
-    preds_df = pd.DataFrame(data={'player': df['Player'].values, 'team': df['Tm'].values, 'y_pred': y_pred, 'pos': df['Pos'].values})
+    preds_df = pd.DataFrame(data={'player': df['player'].values, 'team': df['Tm'].values, 'y_pred': y_pred, 'pos': df['pos'].values})
 
     # sort by prediction
     preds_df = preds_df.sort_values('y_pred', ascending=False).reset_index(drop=True)
@@ -896,6 +1027,7 @@ def plot_2025_preds(preds_df, pos, xlabel, xmin=0, xmax=1):
 
     Args:
     - preds_df (pd.DataFrame): DataFrame containing the model's predictions.
+    - pos (str): position group (e.g., 'QB', 'RB', 'WR', 'TE').
     - xmin (int): Minimum x-axis value for the plot.
     - xmax (int): Maximum x-axis value for the plot.
 
@@ -946,20 +1078,20 @@ def create_injury_features(df):
     Create features for each player.
 
     Args:
-    - df (pd.dataframe): Player data.
+    - df (pd.dataframe): player data.
 
     Returns:
     - (pl.dataframe): Dataframe with new features added.
     """
 
     # convert to polars dataframe and sort
-    df = pl.from_pandas(df).sort(["Key", "Year"])
+    df = pl.from_pandas(df).sort(["key", "year"])
 
     # convert to a lazy frame for efficiency
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['Player', 'Tm', 'Pos', 'Key', 'Year', 'Age', 'Exp', 'target']
+    non_agg_cols = ['player', 'Tm', 'pos', 'key', 'year', 'Age', 'Exp', 'target']
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
     # list of expressions for original columns
@@ -975,15 +1107,15 @@ def create_injury_features(df):
             base_exprs.extend([
                 pl.col(col)
                 .rolling_mean(window_size=n, min_samples=1)
-                .over('Key')
+                .over('key')
                 .alias(f'{col}_{n}y_mean'),
                 pl.col(col)
                 .rolling_std(window_size=n, min_samples=1)
-                .over('Key')
+                .over('key')
                 .alias(f'{col}_{n}y_std')])
 
         # cumulative career mean
-        cum_sum = pl.col(col).cum_sum().over('Key')
+        cum_sum = pl.col(col).cum_sum().over('key')
         cum_count = (pl.col('Exp') + 1)
         cum_mean = (cum_sum / cum_count).alias(f'{col}_career_mean')
         base_exprs.extend([cum_mean])
@@ -1022,7 +1154,7 @@ def plot_adj_preds(preds_df, pos):
 
     # title, labels
     plt.title(f'2025 Predictions: Top {preds_df.shape[0]} {pos}s', fontsize=22)
-    plt.xlabel('PPG', fontsize=22)
+    plt.xlabel('ppg', fontsize=22)
     plt.ylabel('Games Played %', fontsize=22)
 
     # scatter the points
@@ -1049,49 +1181,6 @@ def plot_adj_preds(preds_df, pos):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # rankings.ipynb
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-def clean_preds(preds):
-    # remove "." and " Jr" from player col
-    preds['player'] = preds['player'].str.replace('.', '', regex=False).str.replace(' Jr', '', regex=False)
-
-    # rename some players to match rankings
-    preds.loc[preds['player'] == 'Marquise Brown', 'player'] = 'Hollywood Brown'
-    preds.loc[preds['player'] == 'Josh Palmer', 'player'] = 'Joshua Palmer'
-    preds.loc[preds['player'] == 'Demario Douglas', 'player'] = 'DeMario Douglas'
-    preds.loc[preds['player'] == 'Chigoziem Okonkwo', 'player'] = 'Chig Okonkwo'
-
-    return preds[['player', 'pos', 'ppg_pred', 'pred_rank_2025', 'ppg_rank_2024', 'pff_grade_2024']]
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-def clean_rankings(rankings):
-    # combine firstName and lastName
-    rankings['player'] = rankings['firstName'] + ' ' + rankings['lastName']
-
-    # drop cols
-    rankings = rankings.drop(columns=['id', 'firstName', 'lastName', 'slotName', 'lineupStatus'])
-
-    # remove first 2 chars from positionRank col
-    rankings['positionRank'] = rankings['positionRank'].str[2:]
-
-    # rename positionRank to adp_rank_2025
-    rankings = rankings.rename(columns={'positionRank': 'adp_rank_2025'})
-
-    # drop players with null adp_rank_2025
-    rankings = rankings[rankings['adp_rank_2025'].notnull()]
-
-    # cast adp_rank_2025 to int
-    rankings['adp_rank_2025'] = rankings['adp_rank_2025'].astype(int)
-
-    # remove "." and " Jr" from player col
-    rankings['player'] = rankings['player'].str.replace('.', '', regex=False).str.replace(' Jr', '', regex=False)
-
-    # map teamName col using TEAM_NAMES
-    rankings['teamName'] = rankings['teamName'].map(TEAM_NAMES)
-
-    return rankings.sort_values(by='adp_rank_2025', ascending=True).reset_index(drop=True)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
