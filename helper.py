@@ -77,8 +77,6 @@ SEED = 9
 np.random.seed(SEED)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # preprocessing.ipynb
 
@@ -132,7 +130,7 @@ def load_data(path, pff=False):
 
         # replace 3-letter team codes with 2-letter codes
         team_map = {'GNB': 'GB', 'KAN': 'KC', 'LVR': 'LV', 'NWE': 'NE', 'NOR': 'NO', 'SFO': 'SF', 'TAM': 'TB'}
-        df['Tm'] = df['Tm'].replace(team_map)
+        df['team'] = df['team'].replace(team_map)
 
     return df
 
@@ -541,10 +539,10 @@ def clean_pff_team_data(df):
     df['pass_def_grade'] = ((df['Pass Rush Grade'] + df['Coverage Grade'])) / 2
 
     # fix team col
-    df['team'] = df['Tm']
+    df['team'] = df['team']
 
     # drop columns
-    df = df.drop(columns=['Tm', 'Points For', 'Points Against', 'Wins', 'Losses'])
+    df = df.drop(columns=['team', 'Points For', 'Points Against', 'Wins', 'Losses'])
 
     # add 'team' to the beginning of each column name
     df.columns = ['team_' + col if col not in ['team', 'year'] else col for col in df.columns]
@@ -582,8 +580,6 @@ def consolidate_pos_columns(df, col_name):
     return df.drop([pass_col, rush_col, rec_col], axis=1)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # eda.ipynb
 
@@ -603,35 +599,12 @@ def plot_heatmap(data, title):
     plt.title(title)
     plt.show()
 
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # ppg.ipynb
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def drop_total_volume_cols(df):
-    """
-    Drop total-season volume columns from the DataFrame.
-
-    Args:
-    - df (pd.DataFrame): The DataFrame to drop columns from.
-
-    Returns:
-    - df (pd.DataFrame): The DataFrame with dropped columns.
-    """
-
-    # drop non-normalized columns and a few redundant normalized columns
-    dropped_cols = ['G', 'GS', 'ProBowl', 'AllPro', 'pass_Cmp', 'pass_Att', 'pass_yds', 'pass_td', 'pass_int', 'rush_Att', 'rush_yds', 'rush_td', 'pass_Cmp%', 'rec_Catch%', 'num_games', 'Touches', 
-                'rec_Tgt', 'rec_rec', 'rec_yds', 'rec_td', 'Fmb', 'FmbLost', 'Scrim_td', 'Scrim_yds', 'rush_Y/A', 'rec_Y/R', 'pass_Y/A', 
-                'points_half-ppr', 'points_ovr_rank_half-ppr', 'points_pos_rank_half-ppr', 'points_vorp_half-ppr', 'points_target_half-ppr', 'ppg_vorp_half-ppr']
-    return df.drop(columns=dropped_cols)
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -654,7 +627,7 @@ def create_features(df):
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['player', 'Tm', 'pos', 'key', 'year', 'Age', 'Exp', 'target']
+    non_agg_cols = ['player', 'team', 'pos', 'key', 'year', 'age', 'exp', 'pro_bowl', 'all_pro', 'team_next', 'new_team', 'target']
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
     # list of expressions for original columns
@@ -679,7 +652,7 @@ def create_features(df):
 
         # cumulative career mean & std
         cum_sum = pl.col(col).cum_sum().over('key')
-        cum_count = (pl.col('Exp') + 1)
+        cum_count = (pl.col('exp') + 1)
         cum_mean = (cum_sum / cum_count).alias(f'{col}_career_mean')
         sum_sq = pl.col(col).pow(2).cum_sum().over('key')
         cum_var = ((sum_sq - cum_sum.pow(2) / cum_count) / cum_count)
@@ -727,7 +700,8 @@ def get_pos_subsets(features):
     Returns:
     - qb (pd.DataFrame): Subset of features for quarterbacks.
     - rb (pd.DataFrame): Subset of features for running backs.
-    - wr_te (pd.DataFrame): Subset of features for wide receivers and tight ends.
+    - wr (pd.DataFrame): Subset of features for wide receivers.
+    - te (pd.DataFrame): Subset of features for tight ends.
     """
 
     # create the 4 positional subsets
@@ -736,16 +710,17 @@ def get_pos_subsets(features):
     wr = features.query('pos == "WR"')
     te = features.query('pos == "TE"')
 
-    # drop 'rec' cols for QBs
-    rec_cols = [col for col in features.columns if col.startswith('rec_')]
-    qb = qb.drop(columns=rec_cols)
-
-    # drop 'pass' cols for RBs and WRs/TEs
+    # define positional cols
     pass_cols = [col for col in features.columns if col.startswith('pass_')]
-    rb = rb.drop(columns=pass_cols)
-    wr = wr.drop(columns=pass_cols)
-    te = te.drop(columns=pass_cols)
+    rush_cols = [col for col in features.columns if col.startswith('rush_')]
+    rec_cols = [col for col in features.columns if col.startswith('rec_')]
 
+    # drop non-positional cols
+    qb = qb.drop(columns=rec_cols)
+    rb = rb.drop(columns=pass_cols)
+    wr = wr.drop(columns=pass_cols + rush_cols)
+    te = te.drop(columns=pass_cols + rush_cols)
+    
     return qb, rb, wr, te
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -764,7 +739,7 @@ def cross_val(df, estimator, folds=5):
     """
 
     # non-feature cols
-    non_feat_cols = ['player', 'pos', 'Tm', 'key', 'year', 'target']
+    non_feat_cols = ['player', 'pos', 'team', 'team_next', 'key', 'year', 'target']
 
     # define X and y
     X = df.drop(non_feat_cols, axis=1)
@@ -797,7 +772,7 @@ def get_X_y(pos_subset):
     """
 
     # non-feature cols
-    non_feat_cols = ['player', 'pos', 'Tm', 'key', 'year', 'target']
+    non_feat_cols = ['player', 'pos', 'team', 'key', 'year', 'target']
 
     # define X and y
     X = pos_subset.drop(non_feat_cols, axis=1)
@@ -922,7 +897,7 @@ def get_2024_preds(df, model):
     print()
 
     # create a df for our predictions
-    preds_df = pd.DataFrame(data={'player': df.query('year == 2023')['player'].values, 'team': df.query('year == 2023')['Tm'].values, 
+    preds_df = pd.DataFrame(data={'player': df.query('year == 2023')['player'].values, 'team': df.query('year == 2023')['team'].values, 
                               'y_true': y_test, 'y_pred': y_pred, 'error': (y_pred - y_test), 'pos': df.query('year == 2023')['pos'].values})
     
     # map colors to our preds_df, fill nans with gray
@@ -1006,7 +981,7 @@ def get_2025_preds(df, model):
     y_pred = model.predict(X)
 
     # create a df for our predictions
-    preds_df = pd.DataFrame(data={'player': df['player'].values, 'team': df['Tm'].values, 'y_pred': y_pred, 'pos': df['pos'].values})
+    preds_df = pd.DataFrame(data={'player': df['player'].values, 'team': df['team_next'].values, 'y_pred': y_pred, 'pos': df['pos'].values})
 
     # sort by prediction
     preds_df = preds_df.sort_values('y_pred', ascending=False).reset_index(drop=True)
@@ -1066,8 +1041,6 @@ def plot_2025_preds(preds_df, pos, xlabel, xmin=0, xmax=1):
     plt.show()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # games_played.ipynb
 
@@ -1091,7 +1064,7 @@ def create_injury_features(df):
     lazy_df = df.lazy()
 
     # define cols to aggregate
-    non_agg_cols = ['player', 'Tm', 'pos', 'key', 'year', 'Age', 'Exp', 'target']
+    non_agg_cols = ['player', 'team', 'pos', 'key', 'year', 'Age', 'Exp', 'target']
     agg_cols = [col for col in df.columns if col not in non_agg_cols]
 
     # list of expressions for original columns
@@ -1176,8 +1149,6 @@ def plot_adj_preds(preds_df, pos):
 
     plt.show()
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # rankings.ipynb
